@@ -4,7 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.UIManager;
 
-import org.bigtesting.jbehave.buddy.ui.SyntaxHighlighter;
+import org.bigtesting.jbehave.buddy.ui.StepsEditor;
 
 public class Main {
 
@@ -21,8 +21,8 @@ public class Main {
 			public void run() {
 				try {
 					
-					SyntaxHighlighter highlighter = new SyntaxHighlighter();
-					highlighter.display();
+					StepsEditor editor = new StepsEditor();
+					editor.display();
 					
 				} catch (Exception e) {
 					e.printStackTrace();

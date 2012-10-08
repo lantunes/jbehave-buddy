@@ -17,7 +17,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 
-public class StepsEditor {
+public class StepsEditorModel {
 
 	private static final String STYLE_BLUE_ITALIC = "blue-italic";
 	private static final String STYLE_RED = "red";
@@ -30,7 +30,7 @@ public class StepsEditor {
 	private StoryParser parser = new RegexStoryParser();
 	private Keywords kw = new Keywords();
 	
-	public StepsEditor(StyledDocument doc) {
+	public StepsEditorModel(StyledDocument doc) {
 		this.doc = doc;
 		paramPattern = Pattern.compile("(<).*?(>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 	}

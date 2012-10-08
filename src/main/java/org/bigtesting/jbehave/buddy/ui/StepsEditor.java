@@ -12,14 +12,14 @@ import javax.swing.text.StyledDocument;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.bigtesting.jbehave.buddy.ui.editor.StepsEditor;
+import org.bigtesting.jbehave.buddy.ui.editor.StepsEditorModel;
 import org.bigtesting.jbehave.buddy.ui.widgets.StepsTextPane;
 
-public class SyntaxHighlighter {
+public class StepsEditor {
 
 	private JFrame frame;
 	
-	public SyntaxHighlighter() {
+	public StepsEditor() {
 		initialize();
 	}
 
@@ -36,14 +36,14 @@ public class SyntaxHighlighter {
 		StepsTextPane stepsTextPane = new StepsTextPane(textPane);
 		scrollPane.setRowHeaderView(stepsTextPane);
 		StyledDocument doc = textPane.getStyledDocument();
-		final StepsEditor editor = new StepsEditor(doc);
-		editor.addStylesToDocument(doc);
+		final StepsEditorModel model = new StepsEditorModel(doc);
+		model.addStylesToDocument(doc);
         doc.addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(DocumentEvent evt) {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
-						editor.handleTextEdit();
+						model.handleTextEdit();
 					}
 				});
 			}
@@ -51,7 +51,7 @@ public class SyntaxHighlighter {
 			public void insertUpdate(DocumentEvent evt) {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
-						editor.handleTextEdit();
+						model.handleTextEdit();
 					}
 				});
 			}

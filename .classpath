@@ -24,4 +24,6 @@
   <classpathentry kind="var" path="M2_REPO/xpp3/xpp3_min/1.1.4c/xpp3_min-1.1.4c.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/miglayout/miglayout-swing/4.2/miglayout-swing-4.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/miglayout/miglayout-core/4.2/miglayout-core-4.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/easytesting/fest-assert/1.4/fest-assert-1.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/easytesting/fest-util/1.1.6/fest-util-1.1.6.jar"/>
 </classpath>
