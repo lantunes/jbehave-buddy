@@ -14,6 +14,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.bigtesting.jbehave.buddy.ui.editor.StepsEditorModel;
 import org.bigtesting.jbehave.buddy.ui.widgets.StepsTextPane;
+import org.bigtesting.jbehave.buddy.ui.widgets.SwingStepsDocument;
 
 public class StepsEditor {
 
@@ -36,8 +37,7 @@ public class StepsEditor {
 		StepsTextPane stepsTextPane = new StepsTextPane(textPane);
 		scrollPane.setRowHeaderView(stepsTextPane);
 		StyledDocument doc = textPane.getStyledDocument();
-		final StepsEditorModel model = new StepsEditorModel(doc);
-		model.addStylesToDocument(doc);
+		final StepsEditorModel model = new StepsEditorModel(new SwingStepsDocument(doc));
         doc.addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(DocumentEvent evt) {
