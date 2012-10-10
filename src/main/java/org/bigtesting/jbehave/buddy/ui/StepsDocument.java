@@ -4,13 +4,9 @@ public interface StepsDocument {
 
 	void addStylesToDocument();
 	
-	void highlightKeyword(int keywordStart, int keywordLength);
+	void highlightTerm(int keywordStart, int keywordLength, EditorStyle style);
 
-	void highlightCommentedOutLine(int lineStart);
-
-	void highlightParameter(int paramStart, int paramLength);
-	
-	void highlightError(int errorStart, int errorLength);
+	void highlightLine(int lineStart, EditorStyle style);
 	
 	String getEntireTextContent();
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bigtesting.jbehave.buddy.ui.EditorStyle;
 import org.bigtesting.jbehave.buddy.ui.StepsDocument;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.Story;
@@ -52,7 +53,7 @@ public class StepsEditorModel {
 	
 	private boolean lineIsPartOfStep(ValidRegions validRegions, Line line) {
 		if (!validRegions.contains(line.offset())) {
-			doc.highlightError(line.offset(), line.content().length());
+			doc.highlightTerm(line.offset(), line.content().length(), EditorStyle.RED);
 			return false;
 		}
 		return true;
@@ -63,7 +64,7 @@ public class StepsEditorModel {
 		while (m.find()) {
 			int paramStart = line.offset() + m.start();
 			int paramLength = m.group().length();
-			doc.highlightParameter(paramStart, paramLength);
+			doc.highlightTerm(paramStart, paramLength, EditorStyle.BLUE_ITALIC);
 			//notify that a parameter has been entered
 			//String param = m.group().substring(1, paramLength-1);
 			//System.out.println("param: " + param);
@@ -89,9 +90,9 @@ public class StepsEditorModel {
 			while (keywordStartIndex > -1) {
 				
 				if (keyword.equals(kw.ignorable())) {
-					doc.highlightCommentedOutLine(keywordStartIndex);
+					doc.highlightLine(keywordStartIndex, EditorStyle.LIGHT_GRAY_ITALIC);
 				} else {
-					doc.highlightKeyword(keywordStartIndex, keyword.length());
+					doc.highlightTerm(keywordStartIndex, keyword.length(), EditorStyle.BOLD);
 				}
 				
 				keywordStartIndex = text.indexOf(keyword, keywordStartIndex + 1);

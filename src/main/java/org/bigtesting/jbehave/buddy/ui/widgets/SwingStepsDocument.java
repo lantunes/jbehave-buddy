@@ -1,6 +1,9 @@
 package org.bigtesting.jbehave.buddy.ui.widgets;
 
 import java.awt.Color;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -8,6 +11,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
+import org.bigtesting.jbehave.buddy.ui.EditorStyle;
 import org.bigtesting.jbehave.buddy.ui.StepsDocument;
 
 public class SwingStepsDocument implements StepsDocument {
@@ -18,6 +22,19 @@ public class SwingStepsDocument implements StepsDocument {
 	private static final String STYLE_ITALIC = "italic";
 	private static final String STYLE_BOLD = "bold";
 	private static final String STYLE_REGULAR = "regular";
+	
+	private static final Map<EditorStyle, String> styleMap;
+	
+	static {
+		Map<EditorStyle, String> sm = new HashMap<EditorStyle, String>();
+		sm.put(EditorStyle.BLUE_ITALIC, STYLE_BLUE_ITALIC);
+		sm.put(EditorStyle.BOLD, STYLE_BOLD);
+		sm.put(EditorStyle.ITALIC, STYLE_ITALIC);
+		sm.put(EditorStyle.LIGHT_GRAY_ITALIC, STYLE_LIGHT_GRAY_ITALIC);
+		sm.put(EditorStyle.RED, STYLE_RED);
+		sm.put(EditorStyle.REGULAR, STYLE_REGULAR);
+		styleMap = Collections.unmodifiableMap(sm);
+	}
 	
 	private final StyledDocument doc;
 
@@ -47,22 +64,14 @@ public class SwingStepsDocument implements StepsDocument {
         StyleConstants.setForeground(lightGrayItalic, Color.lightGray);
     }
 	
-	public void highlightKeyword(int keywordStart, int keywordLength) {
-		doc.setCharacterAttributes(keywordStart, keywordLength, doc.getStyle(STYLE_BOLD), true);
+	public void highlightTerm(int keywordStart, int keywordLength, EditorStyle style) {
+		doc.setCharacterAttributes(keywordStart, keywordLength, doc.getStyle(styleMap.get(style)), true);
 	}
 
-	public void highlightCommentedOutLine(int lineStart) {
+	public void highlightLine(int lineStart, EditorStyle style) {
 		int lineEndIndex = getEntireTextContent().indexOf("\n", lineStart);
 		int commentLength = ((lineEndIndex != -1) ? lineEndIndex : doc.getLength()) - lineStart;
-		doc.setCharacterAttributes(lineStart, commentLength, doc.getStyle(STYLE_LIGHT_GRAY_ITALIC), true);
-	}
-	
-	public void highlightParameter(int paramStart, int paramLength) {
-		doc.setCharacterAttributes(paramStart, paramLength, doc.getStyle(STYLE_BLUE_ITALIC), true);
-	}
-	
-	public void highlightError(int offset, int length) {
-		doc.setCharacterAttributes(offset, length, doc.getStyle(STYLE_RED), true);
+		highlightTerm(lineStart, commentLength, style);
 	}
 	
 	public String getEntireTextContent() {
@@ -75,6 +84,6 @@ public class SwingStepsDocument implements StepsDocument {
 	}
 
 	public void clearAllTextStyles() {
-		doc.setCharacterAttributes(0, doc.getLength(), doc.getStyle(STYLE_REGULAR), true);
+		highlightTerm(0, doc.getLength(), EditorStyle.REGULAR);
 	}
 }
