@@ -10,7 +10,7 @@ import org.junit.Test;
 public class TestStepsEditorModel {
 
 	@Test
-	public void termssAreHighlighted() {
+	public void termsAreHighlighted() {
 		
 		String text = "this is jibberish\n" +
 				"!-- this is a comment\n" +
@@ -19,12 +19,14 @@ public class TestStepsEditorModel {
 				"When I test\n" +
 				"Then it should pass";
 		
-		TestableStepsDocument doc = new TestableStepsDocument(text);
+		TestableStepsDocument doc = new TestableStepsDocument();
+		doc.setText(text);
 		
 		StepsEditorModel model = new StepsEditorModel(doc);
 		model.handleTextEdit();
 		
 		HighlightedItem[] items = doc.getHighlightedItems();
+		assertThat(items.length).isEqualTo(7);
 		
 		assertThat(items[0].text()).isEqualTo("!-- this is a comment");
 		assertThat(items[0].style()).isEqualTo(EditorStyle.LIGHT_GRAY_ITALIC);
@@ -46,5 +48,57 @@ public class TestStepsEditorModel {
 		
 		assertThat(items[6].text()).isEqualTo("this is jibberish");
 		assertThat(items[6].style()).isEqualTo(EditorStyle.RED);
+	}
+	
+	@Test
+	public void parameterChangesAreBroadcast() {
+		
+		TestableParametersListener listener = new TestableParametersListener();
+		TestableStepsDocument doc = new TestableStepsDocument();
+		StepsEditorModel model = new StepsEditorModel(doc);
+		model.addParametersListener(listener);
+		
+		doc.setText("Given a <test");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).isEmpty();
+		
+		doc.setText("Given a <test>");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test");
+		
+		doc.setText("Given a <test>\n" +
+				"And another <test2");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test");
+		
+		doc.setText("Given a <test>\n" +
+				"And another <test2>");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test", "test2");
+		
+		doc.setText("Given a <test>\n" +
+				"And another <test2>, <test3>");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test", "test2", "test3");
+		
+		doc.setText("Given a <test>\n" +
+				"And another <test2>, <test3>\n" +
+				"When I use <test2> again");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test", "test2", "test3");
+		
+		doc.setText("Given a <test>\n" +
+				"And another <test2>, <test");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test", "test2");
+		
+		doc.setText("Given a <test>\n" +
+				"And another <te");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).containsOnly("test");
+		
+		doc.setText("Given a <te");
+		model.handleTextEdit();
+		assertThat(listener.getParameters()).isEmpty();
 	}
 }

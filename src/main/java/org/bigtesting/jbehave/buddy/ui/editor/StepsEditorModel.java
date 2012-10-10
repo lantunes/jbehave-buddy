@@ -1,7 +1,9 @@
 package org.bigtesting.jbehave.buddy.ui.editor;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,10 +22,17 @@ public class StepsEditorModel {
 	private StoryParser parser = new RegexStoryParser();
 	private Keywords kw = new Keywords();
 	
+	private final List<ParametersListener> parametersListeners = new ArrayList<ParametersListener>();
+	
 	public StepsEditorModel(StepsDocument doc) {
 		this.doc = doc;
 		this.doc.addStylesToDocument();
+		//TODO the value between the angle brackets must be a valid variable name (e.g. not an empty string, etc.)
 		paramPattern = Pattern.compile("(<).*?(>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	}
+	
+	public void addParametersListener(ParametersListener listener) {
+		this.parametersListeners.add(listener);
 	}
 	
 	public void handleTextEdit() {
@@ -43,11 +52,16 @@ public class StepsEditorModel {
 		
 		ValidRegions validRegions = getValidRegions(text);
 		TextLines lines = new TextLines(text);
+		Set<String> parameters = new HashSet<String>();
 		for (int i = 0; i < lines.count(); i++) {
 			Line line = lines.getLine(i);
 			if (lineIsPartOfStep(validRegions, line)) {
-				highlightParameters(line);
+				List<String> parametersFoundOnLine = highlightParameters(line);
+				parameters.addAll(parametersFoundOnLine);
 			}
+		}
+		for (ParametersListener listener : parametersListeners) {
+			listener.handleParameters(parameters);
 		}
 	}
 	
@@ -59,16 +73,17 @@ public class StepsEditorModel {
 		return true;
 	}
 
-	private void highlightParameters(Line line) {
+	private List<String> highlightParameters(Line line) {
+		List<String> parameters = new ArrayList<String>();
 		Matcher m = paramPattern.matcher(line.content());
 		while (m.find()) {
 			int paramStart = line.offset() + m.start();
 			int paramLength = m.group().length();
 			doc.highlightTerm(paramStart, paramLength, EditorStyle.BLUE_ITALIC);
-			//notify that a parameter has been entered
-			//String param = m.group().substring(1, paramLength-1);
-			//System.out.println("param: " + param);
+			String param = m.group().substring(1, paramLength-1);
+			parameters.add(param);
 		}
+		return parameters;
 	}
 
 	private ValidRegions getValidRegions(String text) {

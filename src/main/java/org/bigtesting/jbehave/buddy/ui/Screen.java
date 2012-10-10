@@ -3,6 +3,8 @@ package org.bigtesting.jbehave.buddy.ui;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,6 +23,8 @@ import javax.swing.JTextPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.StyledDocument;
 
 import net.miginfocom.swing.MigLayout;
@@ -33,6 +37,10 @@ public class Screen {
 
 	private JFrame mainFrame;
 	private JTable examplesTable;
+	private JList parametersList;
+	private StepsEditorModel model;
+	private ScenarioParameters params;
+	private JList parameterValuesList;
 	
 	public Screen() {
 		initialize();
@@ -84,13 +92,16 @@ public class Screen {
 		StepsTextPane stepsTextPane = new StepsTextPane(textPane);
 		stepsScrollPane.setRowHeaderView(stepsTextPane);
 		StyledDocument doc = textPane.getStyledDocument();
-		final StepsEditorModel model = new StepsEditorModel(new SwingStepsDocument(doc));
+		model = new StepsEditorModel(new SwingStepsDocument(doc));
+		params = new ScenarioParameters();
+		model.addParametersListener(params);
         doc.addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(DocumentEvent evt) {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						model.handleTextEdit();
+						parametersList.setListData(params.getActiveParameters());
 					}
 				});
 			}
@@ -99,6 +110,7 @@ public class Screen {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						model.handleTextEdit();
+						parametersList.setListData(params.getActiveParameters());
 					}
 				});
 			}
@@ -115,8 +127,19 @@ public class Screen {
 		JScrollPane parametersScrollPane = new JScrollPane();
 		parametersPanel.add(parametersScrollPane, "cell 0 0,grow");
 		
-		JList parametersList = new JList();
+		parametersList = new JList();
 		parametersScrollPane.setViewportView(parametersList);
+		parametersList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				String param = (String)parametersList.getSelectedValue();
+				if (param != null) {
+					parameterValuesList.setListData(params.getValues(param));
+				} else {
+					parameterValuesList.setListData(new Object[]{});
+				}
+			}
+		});
 		
 		JPanel parameterValuesPanel = new JPanel();
 		parameterValuesPanel.setBorder(new TitledBorder(null, "Parameter Values", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -126,21 +149,47 @@ public class Screen {
 		JScrollPane parameterValuesScrollPane = new JScrollPane();
 		parameterValuesPanel.add(parameterValuesScrollPane, "cell 0 0,grow");
 		
-		JList parameterValuesList = new JList();
+		parameterValuesList = new JList();
 		parameterValuesScrollPane.setViewportView(parameterValuesList);
 		
 		JButton addParamValueButton = new JButton("Add");
 		parameterValuesPanel.add(addParamValueButton, "flowx,cell 0 1,alignx right,aligny bottom");
+		addParamValueButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedParam = (String)parametersList.getSelectedValue();
+				if (selectedParam != null) {
+					ParamValueDialog dlg = new ParamValueDialog(mainFrame);
+					dlg.setVisible(true);
+					String value = dlg.getValue();
+					if (value != null && value.trim().length() != 0) {
+						params.addValue(selectedParam, dlg.getValue());
+						parameterValuesList.setListData(params.getValues(selectedParam));
+					}
+				}
+			}
+		});
 		
 		JButton removeParamButton = new JButton("Remove");
 		parameterValuesPanel.add(removeParamButton, "cell 0 1,alignx right,aligny bottom");
+		removeParamButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedParam = (String)parametersList.getSelectedValue();
+				String selectedValue = (String)parameterValuesList.getSelectedValue();
+				if (selectedParam != null && selectedValue != null) {
+					params.removeValue(selectedParam, selectedValue);
+					parameterValuesList.setListData(params.getValues(selectedParam));
+				}
+			}
+		});
 		
 		JPanel examplesTabPanel = new JPanel();
 		scenarioTabs.addTab("Examples", null, examplesTabPanel, null);
 		examplesTabPanel.setLayout(new MigLayout("", "[grow]", "[][grow][]"));
 		
-		JButton generateAllPossibleButton = new JButton("Generate all possible examples");
-		examplesTabPanel.add(generateAllPossibleButton, "cell 0 0");
+		JButton generateExamplesButton = new JButton("Generate examples");
+		examplesTabPanel.add(generateExamplesButton, "cell 0 0");
 		
 		JScrollPane examplesScrollPane = new JScrollPane();
 		examplesTabPanel.add(examplesScrollPane, "cell 0 1,grow");

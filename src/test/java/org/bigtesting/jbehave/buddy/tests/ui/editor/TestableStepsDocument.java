@@ -10,11 +10,14 @@ import org.bigtesting.jbehave.buddy.ui.StepsDocument;
 
 public class TestableStepsDocument implements StepsDocument {
 
-	private final String text;
+	private String text;
 	
 	private final List<HighlightedItem> highlightedItems = new ArrayList<HighlightedItem>();
 	
-	public TestableStepsDocument(String text) {
+	public TestableStepsDocument() {
+	}
+	
+	public void setText(String text) {
 		this.text = text;
 	}
 	
