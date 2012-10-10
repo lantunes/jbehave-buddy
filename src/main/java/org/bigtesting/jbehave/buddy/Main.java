@@ -4,7 +4,7 @@ import java.awt.EventQueue;
 
 import javax.swing.UIManager;
 
-import org.bigtesting.jbehave.buddy.ui.StepsEditor;
+import org.bigtesting.jbehave.buddy.ui.Screen;
 
 public class Main {
 
@@ -21,8 +21,8 @@ public class Main {
 			public void run() {
 				try {
 					
-					StepsEditor editor = new StepsEditor();
-					editor.display();
+					Screen screen = new Screen();
+					screen.display();
 					
 				} catch (Exception e) {
 					e.printStackTrace();
