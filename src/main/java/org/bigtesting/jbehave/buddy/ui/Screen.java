@@ -51,6 +51,10 @@ public class Screen {
 		initialize();
 	}
 	
+	public JFrame getFrame() {
+		return mainFrame;
+	}
+	
 	private void initialize() {
 		mainFrame = new JFrame();
 		mainFrame.setPreferredSize(new Dimension(859, 582));

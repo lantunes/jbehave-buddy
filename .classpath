@@ -22,4 +22,7 @@
   <classpathentry kind="var" path="M2_REPO/com/miglayout/miglayout-core/4.2/miglayout-core-4.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/easytesting/fest-assert/1.4/fest-assert-1.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/easytesting/fest-util/1.1.6/fest-util-1.1.6.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/easytesting/fest-swing/1.2.1/fest-swing-1.2.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/easytesting/fest-reflect/1.2/fest-reflect-1.2.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0.jar"/>
 </classpath>
