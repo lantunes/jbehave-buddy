@@ -6,6 +6,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Action;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -14,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -30,6 +33,8 @@ import javax.swing.text.StyledDocument;
 import net.miginfocom.swing.MigLayout;
 
 import org.bigtesting.jbehave.buddy.ui.editor.StepsEditorModel;
+import org.bigtesting.jbehave.buddy.ui.widgets.EditListAction;
+import org.bigtesting.jbehave.buddy.ui.widgets.ListAction;
 import org.bigtesting.jbehave.buddy.ui.widgets.StepsTextPane;
 import org.bigtesting.jbehave.buddy.ui.widgets.SwingStepsDocument;
 
@@ -134,9 +139,9 @@ public class Screen {
 			public void valueChanged(ListSelectionEvent e) {
 				String param = (String)parametersList.getSelectedValue();
 				if (param != null) {
-					parameterValuesList.setListData(params.getValues(param));
+					setParameterValues(params.getValues(param));
 				} else {
-					parameterValuesList.setListData(new Object[]{});
+					setParameterValues(new Object[]{});
 				}
 			}
 		});
@@ -149,7 +154,9 @@ public class Screen {
 		JScrollPane parameterValuesScrollPane = new JScrollPane();
 		parameterValuesPanel.add(parameterValuesScrollPane, "cell 0 0,grow");
 		
-		parameterValuesList = new JList();
+		parameterValuesList = new JList(new DefaultListModel());
+		Action a = new EditListAction();
+	    new ListAction(parameterValuesList, a);
 		parameterValuesScrollPane.setViewportView(parameterValuesList);
 		
 		JButton addParamValueButton = new JButton("Add");
@@ -159,12 +166,10 @@ public class Screen {
 			public void actionPerformed(ActionEvent e) {
 				String selectedParam = (String)parametersList.getSelectedValue();
 				if (selectedParam != null) {
-					ParamValueDialog dlg = new ParamValueDialog(mainFrame);
-					dlg.setVisible(true);
-					String value = dlg.getValue();
+					String value = JOptionPane.showInputDialog(mainFrame, "Enter value:");
 					if (value != null && value.trim().length() != 0) {
-						params.addValue(selectedParam, dlg.getValue());
-						parameterValuesList.setListData(params.getValues(selectedParam));
+						params.addValue(selectedParam, value);
+						setParameterValues(params.getValues(selectedParam));
 					}
 				}
 			}
@@ -179,7 +184,7 @@ public class Screen {
 				String selectedValue = (String)parameterValuesList.getSelectedValue();
 				if (selectedParam != null && selectedValue != null) {
 					params.removeValue(selectedParam, selectedValue);
-					parameterValuesList.setListData(params.getValues(selectedParam));
+					setParameterValues(params.getValues(selectedParam));
 				}
 			}
 		});
@@ -227,6 +232,14 @@ public class Screen {
 		
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
 		fileMenu.add(exitMenuItem);
+	}
+	
+	private void setParameterValues(Object[] values) {
+		DefaultListModel model = (DefaultListModel)parameterValuesList.getModel();
+		model.clear();
+		for (Object val : values) {
+			model.addElement(val);
+		}
 	}
 	
 	public void display() {

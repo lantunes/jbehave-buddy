@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.bigtesting.jbehave.buddy.ui.editor.ParametersListener;
 
-public class ScenarioParameters implements ParametersListener {
+public class ScenarioParameters implements ParametersListener, ParametersProvider {
 
 	private final Set<String> activeParameters = new HashSet<String>();
 	private final Comparator<String> comparator = new StringComparator();
