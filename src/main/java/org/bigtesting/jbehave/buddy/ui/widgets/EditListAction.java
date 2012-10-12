@@ -41,6 +41,8 @@ public class EditListAction extends AbstractAction {
 	private JPopupMenu editPopup;
 	private JTextField editTextField;
 	private Class<?> modelClass;
+	
+	private String preEditedValue;
 
 	public EditListAction() {
 		setModelClass(DefaultListModel.class);
@@ -50,9 +52,9 @@ public class EditListAction extends AbstractAction {
 		this.modelClass = modelClass;
 	}
 
-	protected void applyValueToModel(String value, ListModel model, int row) {
+	protected void applyValueToModel(String oldValue, String newValue, ListModel model, int row) {
 		DefaultListModel dlm = (DefaultListModel) model;
-		dlm.set(row, value);
+		dlm.set(row, newValue);
 	}
 
 	/*
@@ -80,7 +82,8 @@ public class EditListAction extends AbstractAction {
 		editPopup.show(list, r.x, r.y);
 
 		// Prepare the text field for editing
-		editTextField.setText(list.getSelectedValue().toString());
+		preEditedValue = list.getSelectedValue().toString();
+		editTextField.setText(preEditedValue);
 		editTextField.selectAll();
 		editTextField.requestFocusInWindow();
 	}
@@ -98,7 +101,7 @@ public class EditListAction extends AbstractAction {
 				String value = editTextField.getText();
 				ListModel model = list.getModel();
 				int row = list.getSelectedIndex();
-				applyValueToModel(value, model, row);
+				applyValueToModel(preEditedValue, value, model, row);
 				editPopup.setVisible(false);
 			}
 			

@@ -5,12 +5,18 @@ import javax.swing.ListModel;
 @SuppressWarnings("serial")
 public class ParamValuesEditListAction extends EditListAction {
 
+	private String currentParam;
+	
 	public ParamValuesEditListAction() {
 		setModelClass(ParameterValuesListModel.class);
 	}
 	
-	protected void applyValueToModel(String value, ListModel model, int row) {
+	public void setCurrentParam(String param) {
+		this.currentParam = param;
+	}
+	
+	protected void applyValueToModel(String oldValue, String newValue, ListModel model, int row) {
 		ParameterValuesListModel lm = (ParameterValuesListModel) model;
-		lm.set(row, value);
+		lm.replaceValue(currentParam, oldValue, newValue);
 	}
 }

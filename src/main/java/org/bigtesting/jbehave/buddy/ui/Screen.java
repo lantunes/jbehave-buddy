@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -46,6 +45,7 @@ public class Screen {
 	private StepsEditorModel model;
 	private ScenarioParameters params;
 	private JList parameterValuesList;
+	private ParamValuesEditListAction editListAction;
 	
 	public Screen() {
 		initialize();
@@ -145,6 +145,7 @@ public class Screen {
 				String param = (String)parametersList.getSelectedValue();
 				if (param != null) {
 					paramValuesListModel.setValuesFor(param);
+					editListAction.setCurrentParam(param);
 				} else {
 					paramValuesListModel.clear();
 				}
@@ -159,9 +160,9 @@ public class Screen {
 		JScrollPane parameterValuesScrollPane = new JScrollPane();
 		parameterValuesPanel.add(parameterValuesScrollPane, "cell 0 0,grow");
 		
-		parameterValuesList = new JList(new ParameterValuesListModel(params));
-		Action a = new ParamValuesEditListAction();
-	    new ListAction(parameterValuesList, a);
+		parameterValuesList = new JList(paramValuesListModel);
+		editListAction = new ParamValuesEditListAction();
+	    new ListAction(parameterValuesList, editListAction);
 		parameterValuesScrollPane.setViewportView(parameterValuesList);
 		
 		JButton addParamValueButton = new JButton("Add");
