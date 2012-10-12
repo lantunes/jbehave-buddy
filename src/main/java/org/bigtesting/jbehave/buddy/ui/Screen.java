@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Action;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -33,8 +32,9 @@ import javax.swing.text.StyledDocument;
 import net.miginfocom.swing.MigLayout;
 
 import org.bigtesting.jbehave.buddy.ui.editor.StepsEditorModel;
-import org.bigtesting.jbehave.buddy.ui.widgets.EditListAction;
 import org.bigtesting.jbehave.buddy.ui.widgets.ListAction;
+import org.bigtesting.jbehave.buddy.ui.widgets.ParamValuesEditListAction;
+import org.bigtesting.jbehave.buddy.ui.widgets.ParameterValuesListModel;
 import org.bigtesting.jbehave.buddy.ui.widgets.StepsTextPane;
 import org.bigtesting.jbehave.buddy.ui.widgets.SwingStepsDocument;
 
@@ -104,6 +104,7 @@ public class Screen {
 		model = new StepsEditorModel(new SwingStepsDocument(doc));
 		params = new ScenarioParameters();
 		model.addParametersListener(params);
+		final ParameterValuesListModel paramValuesListModel = new ParameterValuesListModel(params);
         doc.addDocumentListener(new DocumentListener() {
 			@Override
 			public void removeUpdate(DocumentEvent evt) {
@@ -143,9 +144,9 @@ public class Screen {
 			public void valueChanged(ListSelectionEvent e) {
 				String param = (String)parametersList.getSelectedValue();
 				if (param != null) {
-					setParameterValues(params.getValues(param));
+					paramValuesListModel.setValuesFor(param);
 				} else {
-					setParameterValues(new Object[]{});
+					paramValuesListModel.clear();
 				}
 			}
 		});
@@ -158,8 +159,8 @@ public class Screen {
 		JScrollPane parameterValuesScrollPane = new JScrollPane();
 		parameterValuesPanel.add(parameterValuesScrollPane, "cell 0 0,grow");
 		
-		parameterValuesList = new JList(new DefaultListModel());
-		Action a = new EditListAction();
+		parameterValuesList = new JList(new ParameterValuesListModel(params));
+		Action a = new ParamValuesEditListAction();
 	    new ListAction(parameterValuesList, a);
 		parameterValuesScrollPane.setViewportView(parameterValuesList);
 		
@@ -172,8 +173,7 @@ public class Screen {
 				if (selectedParam != null) {
 					String value = JOptionPane.showInputDialog(mainFrame, "Enter value:");
 					if (value != null && value.trim().length() != 0) {
-						params.addValue(selectedParam, value);
-						setParameterValues(params.getValues(selectedParam));
+						paramValuesListModel.addValue(selectedParam, value);
 					}
 				}
 			}
@@ -187,8 +187,7 @@ public class Screen {
 				String selectedParam = (String)parametersList.getSelectedValue();
 				String selectedValue = (String)parameterValuesList.getSelectedValue();
 				if (selectedParam != null && selectedValue != null) {
-					params.removeValue(selectedParam, selectedValue);
-					setParameterValues(params.getValues(selectedParam));
+					paramValuesListModel.removeValue(selectedParam, selectedValue);
 				}
 			}
 		});
@@ -236,14 +235,6 @@ public class Screen {
 		
 		JMenuItem exitMenuItem = new JMenuItem("Exit");
 		fileMenu.add(exitMenuItem);
-	}
-	
-	private void setParameterValues(Object[] values) {
-		DefaultListModel model = (DefaultListModel)parameterValuesList.getModel();
-		model.clear();
-		for (Object val : values) {
-			model.addElement(val);
-		}
 	}
 	
 	public void display() {
