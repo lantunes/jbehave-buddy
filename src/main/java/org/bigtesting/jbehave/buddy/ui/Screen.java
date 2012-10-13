@@ -89,7 +89,7 @@ public class Screen {
 		
 		JPanel stepsTabPanel = new JPanel();
 		scenarioTabs.addTab("Steps", null, stepsTabPanel, null);
-		stepsTabPanel.setLayout(new MigLayout("", "[360.00,grow][grow]", "[grow][grow]"));
+		stepsTabPanel.setLayout(new MigLayout("", "[360.00,grow][300px:300px:300px,right]", "[grow][grow]"));
 		
 		JScrollPane stepsScrollPane = new JScrollPane();
 		stepsTabPanel.add(stepsScrollPane, "cell 0 0 1 2,grow");
