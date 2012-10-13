@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -21,6 +22,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -31,6 +33,7 @@ import javax.swing.text.StyledDocument;
 import net.miginfocom.swing.MigLayout;
 
 import org.bigtesting.jbehave.buddy.ui.editor.StepsEditorModel;
+import org.bigtesting.jbehave.buddy.ui.widgets.ExamplesTableModel;
 import org.bigtesting.jbehave.buddy.ui.widgets.ListAction;
 import org.bigtesting.jbehave.buddy.ui.widgets.ParamValuesEditListAction;
 import org.bigtesting.jbehave.buddy.ui.widgets.ParameterValuesListModel;
@@ -46,6 +49,8 @@ public class Screen {
 	private ScenarioParameters params;
 	private JList parameterValuesList;
 	private ParamValuesEditListAction editListAction;
+	private ExamplesGenerator examplesGenerator;
+	private ExamplesTableModel examplesTableModel;
 	
 	public Screen() {
 		initialize();
@@ -104,6 +109,7 @@ public class Screen {
 		model = new StepsEditorModel(new SwingStepsDocument(doc));
 		params = new ScenarioParameters();
 		model.addParametersListener(params);
+		examplesGenerator = new ExamplesGenerator(params);
 		final ParameterValuesListModel paramValuesListModel = new ParameterValuesListModel(params);
         doc.addDocumentListener(new DocumentListener() {
 			@Override
@@ -199,11 +205,30 @@ public class Screen {
 		
 		JButton generateExamplesButton = new JButton("Generate examples");
 		examplesTabPanel.add(generateExamplesButton, "cell 0 0");
+		generateExamplesButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						String[][] examples = examplesGenerator.generateExamples();
+						if (examples != null && examples.length != 0) {
+							String[] columnNames = examples[0];
+							String[][] rowData = Arrays.copyOfRange(examples, 1, examples.length);
+							examplesTableModel.clear();
+							examplesTableModel.setData(rowData, columnNames);
+						}
+					}
+				});
+			}
+		});
 		
 		JScrollPane examplesScrollPane = new JScrollPane();
 		examplesTabPanel.add(examplesScrollPane, "cell 0 1,grow");
 		
-		examplesTable = new JTable();
+		examplesTableModel = new ExamplesTableModel();
+		examplesTable = new JTable(examplesTableModel);
+		examplesTableModel.setTable(examplesTable);
 		examplesScrollPane.setViewportView(examplesTable);
 		
 		JButton addExampleButton = new JButton("Add");
