@@ -5,11 +5,7 @@
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/3.8.1/junit-3.8.1.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jbehave/jbehave-core/3.7/jbehave-core-3.7.jar">
-    <attributes>
-      <attribute value="jar:file:/C:/Users/luis/.m2/repository/org/jbehave/jbehave-core/3.7/jbehave-core-3.7-javadoc.jar!/" name="javadoc_location"/>
-    </attributes>
-  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/jbehave/jbehave-core/3.7/jbehave-core-3.7.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit-dep/4.8.2/junit-dep-4.8.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-library/1.1/hamcrest-library-1.1.jar"/>

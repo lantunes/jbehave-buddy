@@ -2,13 +2,13 @@ package org.bigtesting.jbehave.buddy.ui;
 
 public interface StepsDocument {
 
-	void addStylesToDocument();
-	
-	void highlightTerm(int keywordStart, int keywordLength, EditorStyle style);
+    void addStylesToDocument();
 
-	void highlightLine(int lineStart, EditorStyle style);
-	
-	String getEntireTextContent();
+    void highlightTerm(int keywordStart, int keywordLength, EditorStyle style);
 
-	void clearAllTextStyles();
+    void highlightLine(int lineStart, EditorStyle style);
+
+    String getEntireTextContent();
+
+    void clearAllTextStyles();
 }

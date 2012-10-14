@@ -9,12 +9,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-	TestScreen.class,
-	TestStepsEditorModel.class,
-	TestScenarioParameters.class,
-	TestExamplesGenerator.class,
-	TestExamplesFormatter.class
-})
+@Suite.SuiteClasses({ 
+    TestScreen.class, 
+    TestStepsEditorModel.class,
+    TestScenarioParameters.class, 
+    TestExamplesGenerator.class,
+    TestExamplesFormatter.class })
 public class AllTests {
 }

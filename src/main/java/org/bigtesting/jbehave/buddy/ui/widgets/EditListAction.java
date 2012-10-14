@@ -17,102 +17,102 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 /**
- *  Derived from http://tips4java.wordpress.com/2008/10/19/list-editor/
- *  <p>
- *	A simple popup editor for a JList that allows you to change
- *  the value in the selected row.
- *  <p>
- *  The default implementation has a few limitations:
- *  <p>
- *  a) the JList must be using the DefaultListModel
- *  b) the data in the model is replaced with a String object
- *  <p>
- *  If you which to use a different model or different data then you must
- *  extend this class and:
+ * Derived from http://tips4java.wordpress.com/2008/10/19/list-editor/
  * <p>
- *  a) invoke the setModelClass(...) method to specify the ListModel you need
- *  b) override the applyValueToModel(...) method to update the model
+ * A simple popup editor for a JList that allows you to change the value in the
+ * selected row.
+ * <p>
+ * The default implementation has a few limitations:
+ * <p>
+ * a) the JList must be using the DefaultListModel b) the data in the model is
+ * replaced with a String object
+ * <p>
+ * If you which to use a different model or different data then you must extend
+ * this class and:
+ * <p>
+ * a) invoke the setModelClass(...) method to specify the ListModel you need b)
+ * override the applyValueToModel(...) method to update the model
  */
 @SuppressWarnings("serial")
 public class EditListAction extends AbstractAction {
-	
-	private JList list;
 
-	private JPopupMenu editPopup;
-	private JTextField editTextField;
-	private Class<?> modelClass;
-	
-	private String preEditedValue;
+    private JList list;
 
-	public EditListAction() {
-		setModelClass(DefaultListModel.class);
-	}
+    private JPopupMenu editPopup;
+    private JTextField editTextField;
+    private Class<?> modelClass;
 
-	protected void setModelClass(Class<?> modelClass) {
-		this.modelClass = modelClass;
-	}
+    private String preEditedValue;
 
-	protected void applyValueToModel(String oldValue, String newValue, ListModel model, int row) {
-		DefaultListModel dlm = (DefaultListModel) model;
-		dlm.set(row, newValue);
-	}
+    public EditListAction() {
+        setModelClass(DefaultListModel.class);
+    }
 
-	/*
-	 *	Display the popup editor when requested
-	 */
-	public void actionPerformed(ActionEvent e) {
-		
-		list = (JList) e.getSource();
-		ListModel model = list.getModel();
+    protected void setModelClass(Class<?> modelClass) {
+        this.modelClass = modelClass;
+    }
 
-		if (!modelClass.isAssignableFrom(model.getClass()))
-			return;
+    protected void applyValueToModel(String oldValue, String newValue, ListModel model, int row) {
+        DefaultListModel dlm = (DefaultListModel) model;
+        dlm.set(row, newValue);
+    }
 
-		if (editPopup == null)
-			createEditPopup();
+    /*
+     * Display the popup editor when requested
+     */
+    public void actionPerformed(ActionEvent e) {
 
-		// Position the popup editor over top of the selected row
-		int row = list.getSelectedIndex();
-		if (row == -1) {
-			return;
-		}
-		Rectangle r = list.getCellBounds(row, row);
+        list = (JList) e.getSource();
+        ListModel model = list.getModel();
 
-		editPopup.setPreferredSize(new Dimension(r.width, r.height));
-		editPopup.show(list, r.x, r.y);
+        if (!modelClass.isAssignableFrom(model.getClass()))
+            return;
 
-		// Prepare the text field for editing
-		preEditedValue = list.getSelectedValue().toString();
-		editTextField.setText(preEditedValue);
-		editTextField.selectAll();
-		editTextField.requestFocusInWindow();
-	}
+        if (editPopup == null)
+            createEditPopup();
 
-	private void createEditPopup() {
-		// Use a text field as the editor
-		editTextField = new JTextField();
-		Border border = UIManager.getBorder("List.focusCellHighlightBorder");
-		editTextField.setBorder(border);
+        // Position the popup editor over top of the selected row
+        int row = list.getSelectedIndex();
+        if (row == -1) {
+            return;
+        }
+        Rectangle r = list.getCellBounds(row, row);
 
-		editTextField.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent arg0) {
-				String value = editTextField.getText();
-				ListModel model = list.getModel();
-				int row = list.getSelectedIndex();
-				applyValueToModel(preEditedValue, value, model, row);
-				editPopup.setVisible(false);
-			}
-			
-			@Override
-			public void focusGained(FocusEvent arg0) {
-			}
-		});
-		
-		// Add the editor to the popup
-		editPopup = new JPopupMenu();
-		editPopup.setBorder(new EmptyBorder(0, 0, 0, 0));
-		editPopup.add(editTextField);
-	}
+        editPopup.setPreferredSize(new Dimension(r.width, r.height));
+        editPopup.show(list, r.x, r.y);
+
+        // Prepare the text field for editing
+        preEditedValue = list.getSelectedValue().toString();
+        editTextField.setText(preEditedValue);
+        editTextField.selectAll();
+        editTextField.requestFocusInWindow();
+    }
+
+    private void createEditPopup() {
+        // Use a text field as the editor
+        editTextField = new JTextField();
+        Border border = UIManager.getBorder("List.focusCellHighlightBorder");
+        editTextField.setBorder(border);
+
+        editTextField.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusLost(FocusEvent arg0) {
+                String value = editTextField.getText();
+                ListModel model = list.getModel();
+                int row = list.getSelectedIndex();
+                applyValueToModel(preEditedValue, value, model, row);
+                editPopup.setVisible(false);
+            }
+
+            @Override
+            public void focusGained(FocusEvent arg0) {
+            }
+        });
+
+        // Add the editor to the popup
+        editPopup = new JPopupMenu();
+        editPopup.setBorder(new EmptyBorder(0, 0, 0, 0));
+        editPopup.add(editTextField);
+    }
 }
