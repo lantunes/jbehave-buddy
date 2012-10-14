@@ -8,7 +8,7 @@
     <version>0.1</version>
     <name>jbehave-buddy</name>
     <url>http://maven.apache.org</url>
-    <dependencies>
+    <dependencies>        
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -42,6 +42,12 @@
             <version>1.2.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- NOTE: After adding a dependency, remember
+            to run mvn eclipse:eclipse, to regenerate
+            the eclipse .classpath file,
+            and also check the new .classpath file to 
+            ensure that there are no local user-specific
+            paths specified; if there are, remove them. -->
     </dependencies>
     <build>
         <plugins>
