@@ -3,9 +3,11 @@ package org.bigtesting.jbehave.buddy.ui;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,6 +41,7 @@ import org.bigtesting.jbehave.buddy.ui.widgets.ParamValuesEditListAction;
 import org.bigtesting.jbehave.buddy.ui.widgets.ParameterValuesListModel;
 import org.bigtesting.jbehave.buddy.ui.widgets.StepsTextPane;
 import org.bigtesting.jbehave.buddy.ui.widgets.SwingStepsDocument;
+import org.bigtesting.jbehave.buddy.util.ExamplesFormatter;
 
 public class Screen {
 
@@ -51,6 +54,8 @@ public class Screen {
 	private ParamValuesEditListAction editListAction;
 	private ExamplesGenerator examplesGenerator;
 	private ExamplesTableModel examplesTableModel;
+	private JTextArea storyTextArea;
+	private StepsDocument stepsDoc;
 	
 	public Screen() {
 		initialize();
@@ -64,7 +69,7 @@ public class Screen {
 		mainFrame = new JFrame();
 		mainFrame.setPreferredSize(new Dimension(859, 582));
 		mainFrame.setMinimumSize(new Dimension(859, 582));
-		mainFrame.setTitle("JBehave BuDDy");
+		mainFrame.setTitle("JBehave BuDDy v0.1");
 		mainFrame.setBounds(100, 100, 859, 582);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.getContentPane().setLayout(new MigLayout("", "[grow]", "[grow]"));
@@ -106,7 +111,8 @@ public class Screen {
 		StepsTextPane stepsTextPane = new StepsTextPane(textPane);
 		stepsScrollPane.setRowHeaderView(stepsTextPane);
 		StyledDocument doc = textPane.getStyledDocument();
-		model = new StepsEditorModel(new SwingStepsDocument(doc));
+		stepsDoc = new SwingStepsDocument(doc); 
+		model = new StepsEditorModel(stepsDoc);
 		params = new ScenarioParameters();
 		model.addParametersListener(params);
 		examplesGenerator = new ExamplesGenerator(params);
@@ -213,10 +219,8 @@ public class Screen {
 					public void run() {
 						String[][] examples = examplesGenerator.generateExamples();
 						if (examples != null && examples.length != 0) {
-							String[] columnNames = examples[0];
-							String[][] rowData = Arrays.copyOfRange(examples, 1, examples.length);
 							examplesTableModel.clear();
-							examplesTableModel.setData(rowData, columnNames);
+							examplesTableModel.setData(examples);
 						}
 					}
 				});
@@ -233,19 +237,65 @@ public class Screen {
 		
 		JButton addExampleButton = new JButton("Add");
 		examplesTabPanel.add(addExampleButton, "flowx,cell 0 2,alignx right,aligny bottom");
+		addExampleButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				examplesTableModel.addNewRow();
+			}
+		});
 		
 		JButton removeExampleButton = new JButton("Remove");
 		examplesTabPanel.add(removeExampleButton, "cell 0 2,alignx right,aligny bottom");
+		removeExampleButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int[] rows = examplesTable.getSelectedRows();
+				if (rows.length > 0) {
+					examplesTableModel.removeRows(rows);
+				}
+			}
+		});
 		
 		JPanel storyTabPanel = new JPanel();
 		mainTabs.addTab("Story", null, storyTabPanel, null);
-		storyTabPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+		storyTabPanel.setLayout(new MigLayout("", "[grow]", "[grow][]"));
 		
 		JScrollPane storyScrollPane = new JScrollPane();
 		storyTabPanel.add(storyScrollPane, "cell 0 0,grow");
 		
-		JTextArea storyTextArea = new JTextArea();
+		storyTextArea = new JTextArea();
+		storyTextArea.setEditable(false);
 		storyScrollPane.setViewportView(storyTextArea);
+		
+		JButton copyTextButton = new JButton("Copy to clipboard");
+		storyTabPanel.add(copyTextButton, "flowx,cell 0 1,alignx right,aligny bottom");
+		copyTextButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				StringSelection data = new StringSelection(storyTextArea.getText());
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(data, data);
+			}
+		});
+		
+		JButton refreshStoryButton = new JButton("Refresh");
+		storyTabPanel.add(refreshStoryButton, "cell 0 1,alignx right,aligny bottom");
+		refreshStoryButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						StringBuilder sb = new StringBuilder(stepsDoc.getEntireTextContent());
+						if (examplesTableModel.getRowCount() > 0) {
+							sb.append("\n\nExamples:\n");
+							sb.append(ExamplesFormatter.format(examplesTableModel.getCurrentExamples()));
+						}
+						storyTextArea.setText(sb.toString());
+					}
+				});
+			}
+		});
 		
 		JMenuBar menuBar = new JMenuBar();
 		mainFrame.setJMenuBar(menuBar);

@@ -1,5 +1,7 @@
 package org.bigtesting.jbehave.buddy.ui.widgets;
 
+import java.util.Arrays;
+
 import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -8,16 +10,44 @@ import javax.swing.table.TableModel;
 public class ExamplesTableModel implements TableModel {
 	
 	private DefaultTableModel delegate = new DefaultTableModel();
-
 	private JTable table;
 	
 	public void setTable(JTable table) {
 		this.table = table;
 	}
 	
-	public void setData(String[][] rowData, String[] columnNames) {
+	public void setData(String[][] examples) {
+		String[] columnNames = examples[0];
+		String[][] rowData = Arrays.copyOfRange(examples, 1, examples.length);
 		delegate = new DefaultTableModel(rowData, columnNames);
 		table.setModel(delegate);
+	}
+	
+	public String[][] getCurrentExamples() {
+		
+		String[][] examples = new String[getRowCount() + 1][getColumnCount()];
+		for (int i = 0; i < getColumnCount(); i++) {
+			examples[0][i] = getColumnName(i);
+		}
+		for (int i = 0; i < getRowCount(); i++) {
+			for (int j = 0; j < getColumnCount(); j++) {
+				examples[i+1][j] = (String)getValueAt(i, j);
+			}
+		}
+		return examples;
+	}
+	
+	public void addNewRow() {
+		String[] row = new String[getColumnCount()];
+		for (int i = 0; i < getColumnCount(); i++)
+			row[i] = "";
+		delegate.addRow(row);
+	}
+	
+	public void removeRows(int[] rows) {
+		Arrays.sort(rows);
+		for (int i = rows.length - 1; i >= 0; i--)
+			delegate.removeRow(rows[i]);
 	}
 	
 	public void clear() {
@@ -68,5 +98,4 @@ public class ExamplesTableModel implements TableModel {
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		delegate.setValueAt(aValue, rowIndex, rowIndex);
 	}
-	
 }
