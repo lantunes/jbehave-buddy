@@ -8,13 +8,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TestScreen {
+public class ScreenIT {
 
 	private FrameFixture window;
 	
 	@Test
 	public void testIt() throws Exception {
-		//window.show();
+		window.show();
 	}
 
 	@Before
