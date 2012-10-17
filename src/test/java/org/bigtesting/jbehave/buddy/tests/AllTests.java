@@ -1,6 +1,6 @@
 package org.bigtesting.jbehave.buddy.tests;
 
-import org.bigtesting.jbehave.buddy.tests.swing.TestScreen;
+import org.bigtesting.jbehave.buddy.tests.integration.TestScreen;
 import org.bigtesting.jbehave.buddy.tests.ui.TestExamplesGenerator;
 import org.bigtesting.jbehave.buddy.tests.ui.TestScenarioParameters;
 import org.bigtesting.jbehave.buddy.tests.ui.editor.TestStepsEditorModel;

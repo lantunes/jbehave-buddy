@@ -94,6 +94,10 @@ public class Screen {
     public JFrame getFrame() {
         return mainFrame;
     }
+    
+    public void display() {
+        mainFrame.setVisible(true);
+    }
 
     private void initialize() {
         
@@ -468,10 +472,6 @@ public class Screen {
         mainFrame.setBounds(100, 100, 859, 582);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.getContentPane().setLayout(new MigLayout("", "[grow]", "[grow]"));
-    }
-
-    public void display() {
-        mainFrame.setVisible(true);
     }
 
     private void stepsTextEdited() {

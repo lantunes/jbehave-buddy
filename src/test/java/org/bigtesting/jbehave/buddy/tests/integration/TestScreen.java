@@ -1,4 +1,4 @@
-package org.bigtesting.jbehave.buddy.tests.swing;
+package org.bigtesting.jbehave.buddy.tests.integration;
 
 import org.bigtesting.jbehave.buddy.ui.Screen;
 import org.fest.swing.edt.GuiActionRunner;
