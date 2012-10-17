@@ -9,7 +9,6 @@ public class TestableParametersListener implements ParametersListener {
 
     private Set<String> parameters = new HashSet<String>();
 
-    @Override
     public void handleParameters(Set<String> parameters) {
         this.parameters = parameters;
     }

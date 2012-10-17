@@ -47,7 +47,43 @@ import org.bigtesting.jbehave.buddy.util.ExamplesFormatter;
 
 public class Screen {
 
-    private JFrame mainFrame;
+    public static final String MAIN_FRAME = "mainFrame";
+    public static final String MAIN_PANEL = "mainPanel";
+    public static final String MAIN_TABS = "mainTabs";
+    public static final String SCENARIOS_TAB_PANEL = "scenariosTabPanel";
+    public static final String SCENARIO_LABEL = "scenarioLabel";
+    public static final String SCENARIO_COMBO_BOX = "scenarioComboBox";
+    public static final String ADD_SCENARIO_BUTTON = "addScenarioButton";
+    public static final String SCENARIO_TABS = "scenarioTabs";
+    public static final String STEPS_TAB_PANEL = "stepsTabPanel";
+    public static final String STEPS_SCROLL_PANE = "stepsScrollPane";
+    public static final String TEXT_PANE = "textPane";
+    public static final String PARAMETERS_PANEL = "parametersPanel";
+    public static final String PARAMETERS_SCROLL_PANE = "parametersScrollPane";
+    public static final String PARAMETERS_LIST = "parametersList";
+    public static final String GENERATE_EXAMPLES_BUTTON = "generateExamplesButton";
+    public static final String EXAMPLES_SCROLL_PANE = "examplesScrollPane";
+    public static final String EXAMPLES_TAB_PANEL = "examplesTabPanel";
+    public static final String REMOVE_PARAM_VALUE_BUTTON = "removeParamValueButton";
+    public static final String ADD_PARAM_VALUE_BUTTON = "addParamValueButton";
+    public static final String PARAMETER_VALUES_LIST = "parameterValuesList";
+    public static final String PARAMETER_VALUES_SCROLL_PANE = "parameterValuesScrollPane";
+    public static final String PARAMETER_VALUES_PANEL = "parameterValuesPanel";
+    public static final String EXAMPLES_TABLE = "examplesTable";
+    public static final String NUM_EXAMPLES_LABEL = "numExamplesLabel";
+    public static final String ADD_EXAMPLE_BUTTON = "addExampleButton";
+    public static final String REMOVE_EXAMPLE_BUTTON = "removeExampleButton";
+    public static final String STORY_TAB_PANEL = "storyTabPanel";
+    public static final String STORY_SCROLL_PANE = "storyScrollPane";
+    public static final String STORY_TEXT_AREA = "storyTextArea";
+    public static final String COPY_TEXT_BUTTON = "copyTextButton";
+    public static final String REFRESH_STORY_BUTTON = "refreshStoryButton";
+    public static final String EXIT_MENU_ITEM = "exitMenuItem";
+    public static final String OPEN_EXISTING_STORY_MENU_ITEM = "openExistingStoryMenuItem";
+    public static final String NEW_STORY_MENU_ITEM = "newStoryMenuItem";
+    public static final String FILE_MENU = "fileMenu";
+	
+	private JFrame mainFrame;
     private JPanel mainPanel;
     private JTabbedPane mainTabs;
     private JPanel scenariosTabPanel;
@@ -130,7 +166,6 @@ public class Screen {
         examplesGenerator = new ExamplesGenerator(params);
         paramValuesListModel = new ParameterValuesListModel(params);
         doc.addDocumentListener(new DocumentListener() {
-            @Override
             public void removeUpdate(DocumentEvent evt) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
@@ -139,7 +174,6 @@ public class Screen {
                 });
             }
 
-            @Override
             public void insertUpdate(DocumentEvent evt) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
@@ -148,7 +182,6 @@ public class Screen {
                 });
             }
 
-            @Override
             public void changedUpdate(DocumentEvent evt) {
             }
         });
@@ -209,26 +242,29 @@ public class Screen {
         mainFrame.setJMenuBar(menuBar);
 
         JMenu fileMenu = new JMenu("File");
+        fileMenu.setName(FILE_MENU);
         menuBar.add(fileMenu);
 
         JMenuItem newStoryMenuItem = new JMenuItem("New story...");
+        newStoryMenuItem.setName(NEW_STORY_MENU_ITEM);
         fileMenu.add(newStoryMenuItem);
 
         JMenuItem openExistingStoryMenuItem = new JMenuItem("Open existing story...");
+        openExistingStoryMenuItem.setName(OPEN_EXISTING_STORY_MENU_ITEM);
         fileMenu.add(openExistingStoryMenuItem);
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.setName(EXIT_MENU_ITEM);
         fileMenu.add(exitMenuItem);
     }
 
     private void initRefreshStoryButton() {
         refreshStoryButton = new JButton("Refresh");
+        refreshStoryButton.setName(REFRESH_STORY_BUTTON);
         storyTabPanel.add(refreshStoryButton, "cell 0 1,alignx right,aligny bottom");
         refreshStoryButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent arg0) {
                 SwingUtilities.invokeLater(new Runnable() {
-                    @Override
                     public void run() {
                         refreshStory();
                     }
@@ -239,9 +275,9 @@ public class Screen {
 
     private void initCopyTextButton() {
         copyTextButton = new JButton("Copy to clipboard");
+        copyTextButton.setName(COPY_TEXT_BUTTON);
         storyTabPanel.add(copyTextButton, "flowx,cell 0 1,alignx right,aligny bottom");
         copyTextButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 copyToClipboard();
             }
@@ -250,26 +286,29 @@ public class Screen {
 
     private void initStoryTextArea() {
         storyTextArea = new JTextArea();
+        storyTextArea.setName(STORY_TEXT_AREA);
         storyTextArea.setEditable(false);
         storyScrollPane.setViewportView(storyTextArea);
     }
 
     private void initStoryScrollPane() {
         storyScrollPane = new JScrollPane();
+        storyScrollPane.setName(STORY_SCROLL_PANE);
         storyTabPanel.add(storyScrollPane, "cell 0 0,grow");
     }
 
     private void initStoryTabPanel() {
         storyTabPanel = new JPanel();
+        storyTabPanel.setName(STORY_TAB_PANEL);
         mainTabs.addTab("Story", null, storyTabPanel, null);
         storyTabPanel.setLayout(new MigLayout("", "[grow]", "[grow][]"));
     }
 
     private void initRemoveExampleButton() {
         removeExampleButton = new JButton("Remove");
+        removeExampleButton.setName(REMOVE_EXAMPLE_BUTTON);
         examplesTabPanel.add(removeExampleButton, "cell 1 2,alignx right,aligny bottom");
         removeExampleButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 removeExample();
             }
@@ -278,9 +317,9 @@ public class Screen {
 
     private void initAddExampleButton() {
         addExampleButton = new JButton("Add");
+        addExampleButton.setName(ADD_EXAMPLE_BUTTON);
         examplesTabPanel.add(addExampleButton, "flowx,cell 1 2,alignx right,aligny bottom");
         addExampleButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent arg0) {
                 addExample();
             }
@@ -289,15 +328,16 @@ public class Screen {
 
     private void initNumExamplesLabel() {
         numExamplesLabel = new JLabel(" ");
+        numExamplesLabel.setName(NUM_EXAMPLES_LABEL);
         examplesTabPanel.add(numExamplesLabel, "cell 0 2,alignx right,aligny bottom");
     }
 
     private void initExamplesTable() {
         examplesTableModel = new ExamplesTableModel();
         examplesTable = new JTable(examplesTableModel);
+        examplesTable.setName(EXAMPLES_TABLE);
         examplesScrollPane.setViewportView(examplesTable);
         examplesTableModel.addTableModelListener(new TableModelListener() {
-            @Override
             public void tableChanged(TableModelEvent e) {
                 examplesTableChanged(e);
             }
@@ -306,6 +346,7 @@ public class Screen {
 
     private void initParameterValuesPanel() {
         parameterValuesPanel = new JPanel();
+        parameterValuesPanel.setName(PARAMETER_VALUES_PANEL);
         parameterValuesPanel.setBorder(new TitledBorder(null, "Parameter Values", TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         stepsTabPanel.add(parameterValuesPanel, "cell 1 1,grow");
@@ -314,11 +355,13 @@ public class Screen {
 
     private void initParameterValuesScrollPane() {
         parameterValuesScrollPane = new JScrollPane();
+        parameterValuesScrollPane.setName(PARAMETER_VALUES_SCROLL_PANE);
         parameterValuesPanel.add(parameterValuesScrollPane, "cell 0 0,grow");
     }
 
     private void initParameterValuesList() {
         parameterValuesList = new JList(paramValuesListModel);
+        parameterValuesList.setName(PARAMETER_VALUES_LIST);
         editListAction = new ParamValuesEditListAction();
         new ListAction(parameterValuesList, editListAction);
         parameterValuesScrollPane.setViewportView(parameterValuesList);
@@ -326,9 +369,9 @@ public class Screen {
 
     private void initAddParamValueButton() {
         addParamValueButton = new JButton("Add");
+        addParamValueButton.setName(ADD_PARAM_VALUE_BUTTON);
         parameterValuesPanel.add(addParamValueButton, "flowx,cell 0 1,alignx right,aligny bottom");
         addParamValueButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 addParamValue();
             }
@@ -337,9 +380,9 @@ public class Screen {
 
     private void initRemoveParamValueButton() {
         removeParamValueButton = new JButton("Remove");
+        removeParamValueButton.setName(REMOVE_PARAM_VALUE_BUTTON);
         parameterValuesPanel.add(removeParamValueButton, "cell 0 1,alignx right,aligny bottom");
         removeParamValueButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 removeParamValue();
             }
@@ -348,23 +391,24 @@ public class Screen {
 
     private void initExamplesTabPanel() {
         examplesTabPanel = new JPanel();
+        examplesTabPanel.setName(EXAMPLES_TAB_PANEL);
         scenarioTabs.addTab("Examples", null, examplesTabPanel, null);
         examplesTabPanel.setLayout(new MigLayout("", "[][grow]", "[][grow][]"));
     }
 
     private void initExamplesScrollPane() {
         examplesScrollPane = new JScrollPane();
+        examplesScrollPane.setName(EXAMPLES_SCROLL_PANE);
         examplesTabPanel.add(examplesScrollPane, "cell 0 1 2 1,grow");
     }
 
     private void initGenerateExamplesButton() {
         generateExamplesButton = new JButton("Generate examples");
+        generateExamplesButton.setName(GENERATE_EXAMPLES_BUTTON);
         examplesTabPanel.add(generateExamplesButton, "cell 0 0 2 1");
         generateExamplesButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {
-                    @Override
                     public void run() {
                         generateExamples();
                     }
@@ -375,9 +419,9 @@ public class Screen {
 
     private void initParametersList() {
         parametersList = new JList();
+        parametersList.setName(PARAMETERS_LIST);
         parametersScrollPane.setViewportView(parametersList);
         parametersList.addListSelectionListener(new ListSelectionListener() {
-            @Override
             public void valueChanged(ListSelectionEvent e) {
                 parameterSelectionChanged();
             }
@@ -386,11 +430,13 @@ public class Screen {
 
     private void initParametersScrollPane() {
         parametersScrollPane = new JScrollPane();
+        parametersScrollPane.setName(PARAMETERS_SCROLL_PANE);
         parametersPanel.add(parametersScrollPane, "cell 0 0,grow");
     }
 
     private void initParametersPanel() {
         parametersPanel = new JPanel();
+        parametersPanel.setName(PARAMETERS_PANEL);
         parametersPanel.setBorder(new TitledBorder(null, "Parameters", TitledBorder.LEADING, TitledBorder.TOP, null,
                 null));
         stepsTabPanel.add(parametersPanel, "cell 1 0,grow");
@@ -399,6 +445,7 @@ public class Screen {
 
     private void initStepsTextPane() {
         textPane = new JTextPane();
+        textPane.setName(TEXT_PANE);
         textPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         stepsScrollPane.setViewportView(textPane);
         StepsTextPane stepsTextPane = new StepsTextPane(textPane);
@@ -407,32 +454,38 @@ public class Screen {
 
     private void initStepsScrollPane() {
         stepsScrollPane = new JScrollPane();
+        stepsScrollPane.setName(STEPS_SCROLL_PANE);
         stepsTabPanel.add(stepsScrollPane, "cell 0 0 1 2,grow");
     }
 
     private void initStepsTabPanel() {
         stepsTabPanel = new JPanel();
+        stepsTabPanel.setName(STEPS_TAB_PANEL);
         scenarioTabs.addTab("Steps", null, stepsTabPanel, null);
         stepsTabPanel.setLayout(new MigLayout("", "[360.00,grow][300px:300px:300px,right]", "[grow][grow]"));
     }
 
     private void initScenarioTabs() {
         scenarioTabs = new JTabbedPane(JTabbedPane.TOP);
+        scenarioTabs.setName(SCENARIO_TABS);
         scenariosTabPanel.add(scenarioTabs, "cell 0 1 3 1,grow");
     }
 
     private void initAddScenarioButton() {
         addScenarioButton = new JButton("Add...");
+        addScenarioButton.setName(ADD_SCENARIO_BUTTON);
         scenariosTabPanel.add(addScenarioButton, "cell 2 0");
     }
 
     private void initScenarioComboBox() {
         scenarioComboBox = new JComboBox();
+        scenarioComboBox.setName(SCENARIO_COMBO_BOX);
         scenariosTabPanel.add(scenarioComboBox, "cell 1 0,growx");
     }
 
     private void initScenarioLabel() {
         scenarioLabel = new JLabel("Scenario:");
+        scenarioLabel.setName(SCENARIO_LABEL);
         scenariosTabPanel.add(scenarioLabel, "cell 0 0,alignx left");
     }
     
@@ -446,6 +499,7 @@ public class Screen {
 
     private JPanel initScenariosTabPanel() {
         scenariosTabPanel = new JPanel();
+        scenariosTabPanel.setName(SCENARIOS_TAB_PANEL);
         mainTabs.addTab("Scenarios", null, scenariosTabPanel, null);
         scenariosTabPanel.setLayout(new MigLayout("", "[][grow][]", "[][grow]"));
         return scenariosTabPanel;
@@ -453,12 +507,14 @@ public class Screen {
 
     private JTabbedPane initMainTabs() {
         mainTabs = new JTabbedPane(JTabbedPane.TOP);
+        mainTabs.setName(MAIN_TABS);
         mainPanel.add(mainTabs, "cell 0 0,grow");
         return mainTabs;
     }
 
     private JPanel initMainPanel() {
         mainPanel = new JPanel();
+        mainPanel.setName(MAIN_PANEL);
         mainFrame.getContentPane().add(mainPanel, "cell 0 0,grow");
         mainPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
         return mainPanel;
@@ -469,6 +525,7 @@ public class Screen {
         mainFrame.setPreferredSize(new Dimension(859, 582));
         mainFrame.setMinimumSize(new Dimension(859, 582));
         mainFrame.setTitle("JBehave BuDDy v0.1");
+        mainFrame.setName(MAIN_FRAME);
         mainFrame.setBounds(100, 100, 859, 582);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.getContentPane().setLayout(new MigLayout("", "[grow]", "[grow]"));

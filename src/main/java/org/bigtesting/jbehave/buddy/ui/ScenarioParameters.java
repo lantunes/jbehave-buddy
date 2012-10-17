@@ -13,7 +13,6 @@ public class ScenarioParameters implements ParametersListener, ParametersProvide
     private final Set<String> activeParameters = new HashSet<String>();
     private final Map<String, Set<String>> parameterValues = new HashMap<String, Set<String>>();
 
-    @Override
     public void handleParameters(Set<String> parameters) {
         activeParameters.clear();
         activeParameters.addAll(parameters);

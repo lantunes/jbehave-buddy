@@ -96,7 +96,6 @@ public class EditListAction extends AbstractAction {
 
         editTextField.addFocusListener(new FocusListener() {
 
-            @Override
             public void focusLost(FocusEvent arg0) {
                 String value = editTextField.getText();
                 ListModel model = list.getModel();
@@ -105,7 +104,6 @@ public class EditListAction extends AbstractAction {
                 editPopup.setVisible(false);
             }
 
-            @Override
             public void focusGained(FocusEvent arg0) {
             }
         });

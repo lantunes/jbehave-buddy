@@ -356,7 +356,6 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
     //
     // Implement CaretListener interface
     //
-    @Override
     public void caretUpdate(CaretEvent e) {
 
         // Get the line the caret is positioned on
@@ -374,17 +373,14 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
     //
     // Implement DocumentListener interface
     //
-    @Override
     public void changedUpdate(DocumentEvent e) {
         documentChanged();
     }
 
-    @Override
     public void insertUpdate(DocumentEvent e) {
         documentChanged();
     }
 
-    @Override
     public void removeUpdate(DocumentEvent e) {
         documentChanged();
     }
@@ -416,7 +412,6 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
     //
     // Implement PropertyChangeListener interface
     //
-    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getNewValue() instanceof Font) {
             if (updateFont) {

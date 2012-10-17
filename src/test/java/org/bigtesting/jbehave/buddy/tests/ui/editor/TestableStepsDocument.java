@@ -24,7 +24,6 @@ public class TestableStepsDocument implements StepsDocument {
     public HighlightedItem[] getHighlightedItems() {
         HighlightedItem[] items = highlightedItems.toArray(new HighlightedItem[highlightedItems.size()]);
         Arrays.sort(items, new Comparator<HighlightedItem>() {
-            @Override
             public int compare(HighlightedItem o1, HighlightedItem o2) {
                 return o1.text().compareTo(o2.text());
             }
@@ -32,11 +31,9 @@ public class TestableStepsDocument implements StepsDocument {
         return items;
     }
 
-    @Override
     public void addStylesToDocument() {
     }
 
-    @Override
     public void highlightTerm(int keywordStart, int keywordLength, EditorStyle style) {
         int keywordEnd = keywordStart + keywordLength;
         if (keywordStart < text.length() && keywordEnd <= text.length()) {
@@ -45,19 +42,16 @@ public class TestableStepsDocument implements StepsDocument {
         }
     }
 
-    @Override
     public void highlightLine(int lineStart, EditorStyle style) {
         int lineEndIndex = getEntireTextContent().indexOf("\n", lineStart);
         int commentLength = ((lineEndIndex != -1) ? lineEndIndex : text.length()) - lineStart;
         highlightTerm(lineStart, commentLength, style);
     }
 
-    @Override
     public String getEntireTextContent() {
         return text;
     }
 
-    @Override
     public void clearAllTextStyles() {
     }
 
