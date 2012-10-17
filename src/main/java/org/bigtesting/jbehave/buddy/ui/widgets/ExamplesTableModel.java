@@ -2,7 +2,6 @@ package org.bigtesting.jbehave.buddy.ui.widgets;
 
 import java.util.Arrays;
 
-import javax.swing.JTable;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -10,17 +9,12 @@ import javax.swing.table.TableModel;
 public class ExamplesTableModel implements TableModel {
 
     private DefaultTableModel delegate = new DefaultTableModel();
-    private JTable table;
-
-    public void setTable(JTable table) {
-        this.table = table;
-    }
 
     public void setData(String[][] examples) {
         String[] columnNames = examples[0];
         String[][] rowData = Arrays.copyOfRange(examples, 1, examples.length);
-        delegate = new DefaultTableModel(rowData, columnNames);
-        table.setModel(delegate);
+        delegate.setDataVector(rowData, columnNames);
+        delegate.fireTableRowsInserted(0, getRowCount()-1);
     }
 
     public String[][] getCurrentExamples() {
@@ -96,6 +90,6 @@ public class ExamplesTableModel implements TableModel {
 
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-        delegate.setValueAt(aValue, rowIndex, rowIndex);
+        delegate.setValueAt(aValue, rowIndex, columnIndex);
     }
 }
