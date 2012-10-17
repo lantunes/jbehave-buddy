@@ -75,7 +75,15 @@
             </build>
         </profile>
     </profiles>
-    <build>
+	<build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*.story</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

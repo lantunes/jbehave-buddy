@@ -1,16 +1,21 @@
-package org.bigtesting.jbehave.buddy.tests.integration.dsl;
+package org.bigtesting.jbehave.buddy.tests.integration;
 
 import org.bigtesting.jbehave.buddy.ui.Screen;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 
-public class ScreenDSL {
+public class ScreenSteps {
 
-    private static FrameFixture screen;
+    private FrameFixture screen;
     
-    public static void createScreen() {
+    @Given("a screen")
+    public void createScreen() {
         Screen s = GuiActionRunner.execute(new GuiQuery<Screen>() {
             protected Screen executeInEDT() {
                 return new Screen();
@@ -20,16 +25,21 @@ public class ScreenDSL {
         screen.show();
     }
     
-    public static void typeSteps(String steps) {
+    @When("I type the steps: $steps")
+    public void typeSteps(String steps) {
         JTextComponentFixture t = screen.textBox(Screen.TEXT_PANE);
         t.setText(steps);
     }
     
-    public static void assertThatStepsEditorIsEnabled() {
+    @Then("the steps editor is enabled")
+    public void assertThatStepsEditorIsEnabled() {
         screen.textBox(Screen.TEXT_PANE).requireEnabled();
     }
     
-    public static void closeScreen() {
+    /*--------------*/
+    
+    @AfterScenario
+    public void cleanUp() {
         screen.cleanUp();
     }
 }
