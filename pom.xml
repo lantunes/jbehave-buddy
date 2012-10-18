@@ -75,7 +75,7 @@
             </build>
         </profile>
     </profiles>
-	<build>
+    <build>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -92,6 +92,27 @@
                     <source>1.5</source>
                     <target>1.5</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.5.10.201208310627</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
