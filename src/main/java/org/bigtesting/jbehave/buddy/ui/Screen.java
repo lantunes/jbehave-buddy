@@ -82,8 +82,8 @@ public class Screen {
     public static final String OPEN_EXISTING_STORY_MENU_ITEM = "openExistingStoryMenuItem";
     public static final String NEW_STORY_MENU_ITEM = "newStoryMenuItem";
     public static final String FILE_MENU = "fileMenu";
-	
-	private JFrame mainFrame;
+
+    private JFrame mainFrame;
     private JPanel mainPanel;
     private JTabbedPane mainTabs;
     private JPanel scenariosTabPanel;
@@ -114,7 +114,7 @@ public class Screen {
     private JTextArea storyTextArea;
     private JButton copyTextButton;
     private JButton refreshStoryButton;
-    
+
     private StepsEditorModel model;
     private ScenarioParameters params;
     private ParamValuesEditListAction editListAction;
@@ -130,7 +130,7 @@ public class Screen {
     public JFrame getFrame() {
         return mainFrame;
     }
-    
+
     public void display() {
         mainFrame.setVisible(true);
     }
