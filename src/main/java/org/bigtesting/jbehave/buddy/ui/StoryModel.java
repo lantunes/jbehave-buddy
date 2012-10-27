@@ -16,6 +16,10 @@ public class StoryModel {
         return scenarioModels;
     }
     
+    public boolean hasScenarios() {
+        return scenarioModels.getSize() > 0;
+    }
+    
     public ScenarioModel getSelectedScenario() {
         return (ScenarioModel)scenarioModels.getSelectedItem();
     }

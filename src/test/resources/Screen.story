@@ -34,11 +34,11 @@ When I select new story from the file menu
 And I add a new scenario called "Test"
 Then the scenario combo box is enabled
 And the scenario combo box has selected item "Test"
-And the add param value button is enabled
-And the remove param value button is enabled
+And the add param value button is disabled
+And the remove param value button is disabled
 And the generate examples button is enabled
-And the add example button is enabled
-And the remove example button is enabled
+And the add example button is disabled
+And the remove example button is disabled
 And the copy to clipboard button is enabled
 And the refresh story button is enabled
 And the add scenario button is enabled
@@ -128,11 +128,11 @@ And I select new story from the file menu
 And I decline that I want to create a new story
 Then the scenario combo box is enabled
 And the scenario combo box has selected item "Test"
-And the add param value button is enabled
-And the remove param value button is enabled
+And the add param value button is disabled
+And the remove param value button is disabled
 And the generate examples button is enabled
-And the add example button is enabled
-And the remove example button is enabled
+And the add example button is disabled
+And the remove example button is disabled
 And the copy to clipboard button is enabled
 And the refresh story button is enabled
 And the add scenario button is enabled

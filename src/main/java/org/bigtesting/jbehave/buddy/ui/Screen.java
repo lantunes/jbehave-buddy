@@ -9,6 +9,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -25,12 +26,14 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -155,7 +158,6 @@ public class Screen implements IScreen {
     private void createStepsEditorControls() {
         initStepsTabPanel();
         initStepsScrollPane();
-        //initStepsTextPane();
     }
 
     private void createStoryTab() {
@@ -253,6 +255,7 @@ public class Screen implements IScreen {
     private void initStoryTextArea() {
         storyTextArea = new JTextArea();
         storyTextArea.setName(STORY_TEXT_AREA);
+        storyTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         storyTextArea.setEditable(false);
         storyScrollPane.setViewportView(storyTextArea);
     }
@@ -303,6 +306,7 @@ public class Screen implements IScreen {
     private void initExamplesTable() {
         examplesTable = new JTable();
         examplesTable.setName(EXAMPLES_TABLE);
+        disableTable(examplesTable);
         examplesScrollPane.setViewportView(examplesTable);
     }
 
@@ -324,9 +328,15 @@ public class Screen implements IScreen {
     private void initParameterValuesList() {
         parameterValuesList = new JList();
         parameterValuesList.setName(PARAMETER_VALUES_LIST);
+        disableList(parameterValuesList);
         editListAction = new ParamValuesEditListAction();
         new ListAction(parameterValuesList, editListAction);
         parameterValuesScrollPane.setViewportView(parameterValuesList);
+        parameterValuesList.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                parameterValueSelectionChanged();
+            }
+        });
     }
 
     private void initAddParamValueButton() {
@@ -385,6 +395,7 @@ public class Screen implements IScreen {
     private void initParametersList() {
         parametersList = new JList();
         parametersList.setName(PARAMETERS_LIST);
+        disableList(parametersList);
         parametersScrollPane.setViewportView(parametersList);
         parametersList.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
@@ -473,13 +484,7 @@ public class Screen implements IScreen {
         scenariosTabPanel.add(scenarioComboBox, "cell 1 0,growx");
         scenarioComboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                parameterValuesList.setModel(storyModel.getSelectedScenario().getParamValuesListModel());
-                parametersList.setModel(storyModel.getSelectedScenario().getParametersListModel());
-                examplesTable.setModel(storyModel.getSelectedScenario().getExamplesTableModel());
-                updateExamplesTableExamplesCount();
-                JTextPane textPane = storyModel.getSelectedScenario().getStepsTextPane();
-                stepsScrollPane.setViewportView(textPane);
-                stepsScrollPane.setRowHeaderView(new StepsTextPane(textPane));
+                scenarioChanged();
             }
         });
     }
@@ -551,9 +556,17 @@ public class Screen implements IScreen {
         if (param != null) {
             storyModel.getSelectedScenario().setValuesFor(param);
             editListAction.setCurrentParam(param);
+            addParamValueButton.setEnabled(true);
         } else {
-            storyModel.getSelectedScenario().clearParameterValues();
+            if (storyModel.hasScenarios()) {
+                storyModel.getSelectedScenario().clearParameterValues();
+            }
+            addParamValueButton.setEnabled(false);
         }
+    }
+    
+    private void parameterValueSelectionChanged() {
+        removeParamValueButton.setEnabled(parameterValuesList.getSelectedValue() != null);
     }
 
     private void generateExamples() {
@@ -566,6 +579,8 @@ public class Screen implements IScreen {
             }
         }
         storyModel.getSelectedScenario().generateExamples();
+        
+        enableOrDisableExamplesTableAddRemoveButtons();
     }
 
     private void copyToClipboard() {
@@ -606,9 +621,20 @@ public class Screen implements IScreen {
             return;
         }
         
+        parametersList.clearSelection();
         storyModel.addScenario(description, this);
-        
         enableControls(true);
+    }
+    
+    private void scenarioChanged() {
+        parameterValuesList.setModel(storyModel.getSelectedScenario().getParamValuesListModel());
+        parametersList.setModel(storyModel.getSelectedScenario().getParametersListModel());
+        examplesTable.setModel(storyModel.getSelectedScenario().getExamplesTableModel());
+        enableOrDisableExamplesTableAddRemoveButtons();
+        updateExamplesTableExamplesCount();
+        JTextPane textPane = storyModel.getSelectedScenario().getStepsTextPane();
+        stepsScrollPane.setViewportView(textPane);
+        stepsScrollPane.setRowHeaderView(new StepsTextPane(textPane));
     }
     
     private void newStory() {
@@ -626,17 +652,57 @@ public class Screen implements IScreen {
         scenarioComboBox.setModel(storyModel.getComboBoxModel());
         
         addScenarioButton.setEnabled(true);
+        storyTextArea.setText("");
         enableControls(false);
     }
     
     private void enableControls(boolean enabled) {
         scenarioComboBox.setEnabled(enabled);
-        addParamValueButton.setEnabled(enabled);
-        removeParamValueButton.setEnabled(enabled);
         generateExamplesButton.setEnabled(enabled);
-        addExampleButton.setEnabled(enabled);
-        removeExampleButton.setEnabled(enabled);
         copyTextButton.setEnabled(enabled);
         refreshStoryButton.setEnabled(enabled);
+        if (!enabled) {
+            stepsScrollPane.setViewportView(null);
+            stepsScrollPane.setRowHeaderView(null);
+            disableList(parametersList);
+            disableList(parameterValuesList);
+            disableTable(examplesTable);
+            enableOrDisableExamplesTableAddRemoveButtons();
+            updateExamplesTableExamplesCount();
+        } else {
+            enableList(parametersList);
+            enableList(parameterValuesList);
+            enableTable(examplesTable);
+            enableOrDisableExamplesTableAddRemoveButtons();
+        }
+    }
+    
+    private void disableList(JList list) {
+        list.setEnabled(false);
+        list.setModel(new DefaultListModel());
+        list.setBackground(UIManager.getColor("List.disabledBackground"));
+    }
+    
+    private void enableList(JList list) {
+        list.setEnabled(true);
+        list.setBackground(UIManager.getColor("List.background"));
+    }
+    
+    private void disableTable(JTable table) {
+        table.setEnabled(false);
+        table.setModel(new DefaultTableModel());
+        table.setBackground(UIManager.getColor("Table.disabledBackground"));
+    }
+    
+    private void enableTable(JTable table) {
+        table.setEnabled(true);
+        table.setBackground(UIManager.getColor("Table.background"));
+    }
+    
+    private void enableOrDisableExamplesTableAddRemoveButtons() {
+        int rowCount = examplesTable.getModel().getRowCount();
+        boolean enabled = rowCount > 0;
+        addExampleButton.setEnabled(enabled);
+        removeExampleButton.setEnabled(enabled);
     }
 }
