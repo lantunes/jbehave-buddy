@@ -27,8 +27,7 @@ public class StepsEditorModel {
     public StepsEditorModel(StepsDocument doc) {
         this.doc = doc;
         this.doc.addStylesToDocument();
-        // TODO the value between the angle brackets must be a valid variable
-        // name (e.g. not an empty string, etc.)
+        // TODO the value between the angle brackets must be a valid variable name (e.g. not an empty string, etc.)
         paramPattern = Pattern.compile("(<).*?(>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     }
 
@@ -36,6 +35,10 @@ public class StepsEditorModel {
         this.parametersListeners.add(listener);
     }
 
+    public String getText() {
+        return doc.getEntireTextContent();
+    }
+   
     public void handleTextEdit() {
         try {
 
@@ -48,7 +51,7 @@ public class StepsEditorModel {
             e.printStackTrace();
         }
     }
-
+    
     private void performSemanticAnalysis(String text) {
 
         ValidRegions validRegions = getValidRegions(text);
