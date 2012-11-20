@@ -1,6 +1,15 @@
 JBehave BuDDy is a desktop application that helps you write story files. It 
 provides a graphical interface for creating, editing, and formatting stories.
 
+Q: Why a separate application? Why not use an existing IDE JBehave plugin to 
+edit story files?
+
+A: The answer to these questions is quite simple: not all members of a team
+that need to edit a story file are developers. In our practice, developers
+collaborate with QA and business analysts to write the stories. We have 
+found that non-developers are usually more comfortable working outside an 
+IDE. We needed a tool that met the needs of any member of the team.  
+
 JBehave BuDDy:
 
 * validates your steps syntax and highlights keywords, making it harder to
