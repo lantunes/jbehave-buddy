@@ -204,7 +204,7 @@
                             <jre>
                                 <minVersion>1.5.0</minVersion>
                             </jre>
-                            <icon>pics/glad.ico</icon>
+                            <icon>pics/logo.ico</icon>
                             <versionInfo>
                                 <fileVersion>0.0.0.1</fileVersion>
                                 <txtFileVersion>JBehave StoryWriter</txtFileVersion>

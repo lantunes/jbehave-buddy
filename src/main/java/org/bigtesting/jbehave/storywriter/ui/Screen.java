@@ -536,7 +536,7 @@ public class Screen implements IScreen {
         mainFrame.setTitle("JBehave StoryWriter v0.1");
         BufferedImage image = null;
         try {
-            image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("glad.png"));
+            image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("logo.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
