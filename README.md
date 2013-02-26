@@ -15,16 +15,16 @@ JBehave StoryWriter:
 * validates your steps syntax and highlights keywords, making it harder to
 introduce difficult-to-debug errors
 
-![Steps](https://github.com/bytearray/jbehave-storywriter/raw/master/pics/steps.jpg)
+![Steps](https://github.com/lantunes/jbehave-storywriter/raw/master/pics/steps.jpg)
 
 * generates examples, allowing you to see all possible cases based on the 
 parameters in the scenario, and to keep only the ones you care about
 
-![Examples](https://github.com/bytearray/jbehave-storywriter/raw/master/pics/examples.jpg)
+![Examples](https://github.com/lantunes/jbehave-storywriter/raw/master/pics/examples.jpg)
 
 * neatly and correctly formats your story file output
 
-![Story](https://github.com/bytearray/jbehave-storywriter/raw/master/pics/story.jpg)
+![Story](https://github.com/lantunes/jbehave-storywriter/raw/master/pics/story.jpg)
 
 JBehave StoryWriter is written for the Java platform. It is distributed as an .exe 
 file for Windows systems, and as an executable jar file for all other operating
