@@ -13,6 +13,7 @@ import javax.swing.text.StyledDocument;
 
 import org.bigtesting.jbehave.storywriter.ui.EditorStyle;
 import org.bigtesting.jbehave.storywriter.ui.StepsDocument;
+import org.bigtesting.jbehave.storywriter.util.ExceptionFileWriter;
 
 public class SwingStepsDocument implements StepsDocument {
 
@@ -78,7 +79,7 @@ public class SwingStepsDocument implements StepsDocument {
         try {
             return doc.getText(0, doc.getLength());
         } catch (BadLocationException e) {
-            e.printStackTrace();
+            ExceptionFileWriter.writeException(e);
         }
         return null;
     }
@@ -91,7 +92,7 @@ public class SwingStepsDocument implements StepsDocument {
         try {
             doc.insertString(0, text, null);
         } catch (BadLocationException e) {
-            e.printStackTrace();
+            ExceptionFileWriter.writeException(e);
         }
     }
 }

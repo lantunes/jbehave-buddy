@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bigtesting.jbehave.storywriter.ui.EditorStyle;
 import org.bigtesting.jbehave.storywriter.ui.StepsDocument;
+import org.bigtesting.jbehave.storywriter.util.ExceptionFileWriter;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -52,7 +53,7 @@ public class StepsEditorModel {
             performSemanticAnalysis(text);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionFileWriter.writeException(e);
         }
     }
     

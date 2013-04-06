@@ -6,6 +6,7 @@ import java.io.File;
 import javax.swing.UIManager;
 
 import org.bigtesting.jbehave.storywriter.ui.Screen;
+import org.bigtesting.jbehave.storywriter.util.ExceptionFileWriter;
 
 public class Main {
 
@@ -14,7 +15,8 @@ public class Main {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Throwable e) {
-            e.printStackTrace();
+            ExceptionFileWriter.writeException(e);
+            System.exit(1);
         }
 
         EventQueue.invokeLater(new Runnable() {
@@ -30,7 +32,8 @@ public class Main {
                     screen.display();
 
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ExceptionFileWriter.writeException(e);
+                    System.exit(1);
                 }
             }
         });

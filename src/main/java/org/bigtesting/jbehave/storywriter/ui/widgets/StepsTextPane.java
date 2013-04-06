@@ -31,6 +31,8 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.Utilities;
 
+import org.bigtesting.jbehave.storywriter.util.ExceptionFileWriter;
+
 /**
  * Derived from
  * http://tips4java.wordpress.com/2009/05/23/text-component-line-number/
@@ -264,7 +266,7 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
                 rowStartOffset = Utilities.getRowEnd(component, rowStartOffset) + 1;
 
             } catch (Exception e) {
-                e.printStackTrace();
+                ExceptionFileWriter.writeException(e);
             }
         }
     }

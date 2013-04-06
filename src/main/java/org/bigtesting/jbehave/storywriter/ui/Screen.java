@@ -44,6 +44,7 @@ import net.miginfocom.swing.MigLayout;
 import org.bigtesting.jbehave.storywriter.ui.widgets.ListAction;
 import org.bigtesting.jbehave.storywriter.ui.widgets.ParamValuesEditListAction;
 import org.bigtesting.jbehave.storywriter.ui.widgets.StepsTextPane;
+import org.bigtesting.jbehave.storywriter.util.ExceptionFileWriter;
 
 public class Screen implements IScreen {
 
@@ -298,6 +299,7 @@ public class Screen implements IScreen {
         try {
             storyModel = new StoryImporter().importStory(existingStoryFile, this);
         } catch (Exception e) {
+            ExceptionFileWriter.writeException(e);
             JOptionPane.showMessageDialog(mainFrame, "there was an error parsing the story file: " + e.getMessage());
         }
     }
@@ -613,7 +615,7 @@ public class Screen implements IScreen {
         try {
             image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("logo.png"));
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionFileWriter.writeException(e);
         }
         mainFrame.setIconImage(image);
         mainFrame.setName(MAIN_FRAME);
@@ -623,7 +625,9 @@ public class Screen implements IScreen {
     }
 
     private void stepsTextEdited() {
-        storyModel.getSelectedScenario().handleStepsTextEdit();
+        if (storyModel != null && storyModel.getSelectedScenario() != null) {
+            storyModel.getSelectedScenario().handleStepsTextEdit();
+        }
     }
 
     private void addParamValue() {
@@ -737,11 +741,11 @@ public class Screen implements IScreen {
             }
         }
         
-        storyModel = new StoryModel();
         prepareUIForNewStory();
     }
     
     private void prepareUIForNewStory() {
+        storyModel = new StoryModel();
         scenarioComboBox.setModel(storyModel.getComboBoxModel());
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
