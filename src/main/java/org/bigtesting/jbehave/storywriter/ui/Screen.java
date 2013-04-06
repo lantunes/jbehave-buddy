@@ -262,7 +262,7 @@ public class Screen implements IScreen {
         
         importStory();
 
-        if (storyModel.hasScenarios()) {
+        if (storyModel != null && storyModel.hasScenarios()) {
             prepareUIForExistingStory();
         } else {
             prepareUIForNewStory();
