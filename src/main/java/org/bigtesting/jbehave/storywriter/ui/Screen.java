@@ -9,6 +9,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -119,11 +120,18 @@ public class Screen implements IScreen {
     private ParamValuesEditListAction editListAction;
     
     private StoryModel storyModel;
-
+    
+    private File existingStoryFile;
+    
     public Screen() {
+        this(null);
+    }
+    
+    public Screen(File existingStoryFile) {
+        this.existingStoryFile = existingStoryFile;
         initialize();
     }
-
+    
     public JFrame getFrame() {
         return mainFrame;
     }
@@ -150,6 +158,10 @@ public class Screen implements IScreen {
         createStoryTab();
 
         initMenuBar();
+        
+        if (hasExistingStoryFile()) {
+            initExistingStory();
+        }
     }
 
     private void createTopLevelScenariosControls() {
@@ -217,14 +229,29 @@ public class Screen implements IScreen {
             }
         });
         fileMenu.add(newStoryMenuItem);
+        newStoryMenuItem.setEnabled(!hasExistingStoryFile());
 
         JMenuItem openExistingStoryMenuItem = new JMenuItem("Open existing story...");
         openExistingStoryMenuItem.setName(OPEN_EXISTING_STORY_MENU_ITEM);
         fileMenu.add(openExistingStoryMenuItem);
+        openExistingStoryMenuItem.setEnabled(!hasExistingStoryFile());
 
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setName(EXIT_MENU_ITEM);
         fileMenu.add(exitMenuItem);
+    }
+    
+    private void initExistingStory() {
+        try {
+            storyModel = new StoryImporter().importStory(existingStoryFile, this);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(mainFrame, "there was an error parsing the story file: " + e.getMessage());
+        }
+        scenarioComboBox.setModel(storyModel.getComboBoxModel());
+        addScenarioButton.setEnabled(true);
+        storyTextArea.setText("");
+        enableControls(true);
+        scenarioChanged();
     }
 
     private void initRefreshStoryButton() {
@@ -645,6 +672,7 @@ public class Screen implements IScreen {
         JTextPane textPane = storyModel.getSelectedScenario().getStepsTextPane();
         stepsScrollPane.setViewportView(textPane);
         stepsScrollPane.setRowHeaderView(new StepsTextPane(textPane));
+        storyModel.getSelectedScenario().clearParameterValues();
     }
     
     private void newStory() {
@@ -659,8 +687,11 @@ public class Screen implements IScreen {
         }
         
         storyModel = new StoryModel();
+        prepareUIForNewStory();
+    }
+    
+    private void prepareUIForNewStory() {
         scenarioComboBox.setModel(storyModel.getComboBoxModel());
-        
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
         enableControls(false);
@@ -714,5 +745,9 @@ public class Screen implements IScreen {
         boolean enabled = rowCount > 0;
         addExampleButton.setEnabled(enabled);
         removeExampleButton.setEnabled(enabled);
+    }
+    
+    private boolean hasExistingStoryFile() {
+        return existingStoryFile != null;
     }
 }

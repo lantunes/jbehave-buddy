@@ -86,4 +86,12 @@ public class SwingStepsDocument implements StepsDocument {
     public void clearAllTextStyles() {
         highlightTerm(0, doc.getLength(), EditorStyle.REGULAR);
     }
+    
+    public void setText(String text) {
+        try {
+            doc.insertString(0, text, null);
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+    }
 }

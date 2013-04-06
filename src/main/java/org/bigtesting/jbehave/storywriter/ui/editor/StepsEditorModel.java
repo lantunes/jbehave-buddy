@@ -39,6 +39,10 @@ public class StepsEditorModel {
         return doc.getEntireTextContent();
     }
    
+    public void setSteps(String steps) {
+        doc.setText(steps);
+    }
+    
     public void handleTextEdit() {
         try {
 

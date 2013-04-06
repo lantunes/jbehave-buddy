@@ -48,6 +48,11 @@ public class ScenarioModel {
         return stepsTextPane;
     }
     
+    public void setSteps(String steps) {
+        stepsModel.setSteps(steps);
+        handleStepsTextEdit();
+    }
+    
     public String print() {
         StringBuilder sb = new StringBuilder(stepsModel.getText());
         if (examplesTableModel.getRowCount() > 0) {
@@ -59,6 +64,10 @@ public class ScenarioModel {
     
     public void generateExamples() {
         String[][] examples = examplesGenerator.generateExamples();
+        setExamples(examples);
+    }
+    
+    public void setExamples(String[][] examples) {
         if (examples != null && examples.length != 0) {
             examplesTableModel.clear();
             examplesTableModel.setData(examples);

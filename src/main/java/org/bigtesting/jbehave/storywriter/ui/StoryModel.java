@@ -12,6 +12,10 @@ public class StoryModel {
         scenarioModels.setSelectedItem(model);
     }
     
+    public void addExistingScenario(ScenarioModel model) {
+        scenarioModels.addElement(model);
+    }
+    
     public DefaultComboBoxModel getComboBoxModel() {
         return scenarioModels;
     }

@@ -11,4 +11,6 @@ public interface StepsDocument {
     String getEntireTextContent();
 
     void clearAllTextStyles();
+    
+    void setText(String text);
 }
