@@ -21,8 +21,10 @@ public class StoryImporter {
         StoryModel storyModel = new StoryModel();
         StoryParser parser = new RegexStoryParser();
         String storyContents = readFile(storyFile);
-        Story story = parser.parseStory(storyContents);
-        addScenarios(screen, storyModel, story);
+        if (storyContents != null && storyContents.trim().length() > 0) {
+            Story story = parser.parseStory(storyContents);
+            addScenarios(screen, storyModel, story);
+        }
         return storyModel;
     }
 
@@ -39,7 +41,7 @@ public class StoryImporter {
     private void addExamplesAndParamValues(Scenario scenario, ScenarioModel scenarioModel) {
         
         ExamplesTable examplesTable = scenario.getExamplesTable();
-        if (examplesTable.getRowCount() > 0) {
+        if (examplesTable != null && examplesTable.getRowCount() > 0) {
             String[][] examples = new String[examplesTable.getRowCount() + 1][examplesTable.getHeaders().size()];
             Map<String, Integer> headerIndexMap = new HashMap<String, Integer>();                
             for (int i = 0; i < examplesTable.getHeaders().size(); i++) {
@@ -75,13 +77,12 @@ public class StoryImporter {
     private String readFile(File file) throws IOException {
         
         BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line = null;
         StringBuilder stringBuilder = new StringBuilder();
-        String ls = System.getProperty("line.separator");
+        String separator = System.getProperty("line.separator");
 
+        String line = null;
         while ((line = reader.readLine()) != null) {
-            stringBuilder.append(line);
-            stringBuilder.append(ls);
+            stringBuilder.append(line).append(separator);
         }
 
         return stringBuilder.toString();
