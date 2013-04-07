@@ -48,6 +48,9 @@ import org.bigtesting.jbehave.buddy.util.ExceptionFileWriter;
 
 public class Screen implements IScreen {
 
+    private static final String TITLE = "JBehave BuDDy";
+    private static final String version = "0.1";
+    
     public static final String EXAMPLES_TAB_TITLE = "Examples";
     public static final String STORY_TAB_TITLE = "Story";
     public static final String SCENARIOS_TAB_TITLE = "Scenarios";
@@ -89,6 +92,8 @@ public class Screen implements IScreen {
     public static final String OPEN_EXISTING_STORY_MENU_ITEM = "openExistingStoryMenuItem";
     public static final String NEW_STORY_MENU_ITEM = "newStoryMenuItem";
     public static final String FILE_MENU = "fileMenu";
+    public static final String HELP_MENU = "helpMenu";
+    public static final String ABOUT_MENU_ITEM = "aboutMenuItem";
 
     private JFrame mainFrame;
     private JPanel mainPanel;
@@ -222,10 +227,21 @@ public class Screen implements IScreen {
         JMenuBar menuBar = new JMenuBar();
         mainFrame.setJMenuBar(menuBar);
 
+        initFileMenu(menuBar);
+        initHelpMenu(menuBar);
+    }
+
+    private void initFileMenu(JMenuBar menuBar) {
         JMenu fileMenu = new JMenu("File");
         fileMenu.setName(FILE_MENU);
         menuBar.add(fileMenu);
 
+        initNewStoryMenuItem(fileMenu);
+        initOpenExistingStoryMenuItem(fileMenu);
+        initExitMenuItem(fileMenu);
+    }
+
+    private void initNewStoryMenuItem(JMenu fileMenu) {
         JMenuItem newStoryMenuItem = new JMenuItem("New story...");
         newStoryMenuItem.setName(NEW_STORY_MENU_ITEM);
         newStoryMenuItem.addActionListener(new ActionListener() {
@@ -235,12 +251,16 @@ public class Screen implements IScreen {
         });
         fileMenu.add(newStoryMenuItem);
         newStoryMenuItem.setEnabled(!hasExistingStoryFile());
-
+    }
+    
+    private void initOpenExistingStoryMenuItem(JMenu fileMenu) {
         JMenuItem openExistingStoryMenuItem = new JMenuItem("Open existing story...");
         openExistingStoryMenuItem.setName(OPEN_EXISTING_STORY_MENU_ITEM);
         fileMenu.add(openExistingStoryMenuItem);
         openExistingStoryMenuItem.setEnabled(!hasExistingStoryFile());
-
+    }
+    
+    private void initExitMenuItem(JMenu fileMenu) {
         JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.setName(EXIT_MENU_ITEM);
         exitMenuItem.addActionListener(new ActionListener() {
@@ -249,6 +269,27 @@ public class Screen implements IScreen {
             }
         });
         fileMenu.add(exitMenuItem);
+    }
+    
+    private void initHelpMenu(JMenuBar menuBar) {
+        JMenu helpMenu = new JMenu("Help");
+        helpMenu.setName(HELP_MENU);
+        menuBar.add(helpMenu);
+        
+        initAboutMenuItem(helpMenu);
+    }
+
+    private void initAboutMenuItem(JMenu helpMenu) {
+        JMenuItem aboutMenuItem = new JMenuItem("About");
+        aboutMenuItem.setName(ABOUT_MENU_ITEM);
+        aboutMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                JOptionPane.showMessageDialog(mainFrame, 
+                        TITLE + " version " + version, 
+                        "About", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        helpMenu.add(aboutMenuItem);
     }
     
     private void close() {
@@ -610,7 +651,7 @@ public class Screen implements IScreen {
         mainFrame = new JFrame();
         mainFrame.setPreferredSize(new Dimension(859, 582));
         mainFrame.setMinimumSize(new Dimension(859, 582));
-        mainFrame.setTitle("JBehave BuDDy");
+        mainFrame.setTitle(TITLE);
         BufferedImage image = null;
         try {
             image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("logo.png"));
