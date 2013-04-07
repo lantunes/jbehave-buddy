@@ -51,6 +51,7 @@ public class SwingStepsDocument implements StepsDocument {
 
         Style bold = doc.addStyle(STYLE_BOLD, regular);
         StyleConstants.setBold(bold, true);
+        StyleConstants.setForeground(bold, new Color(139, 34, 82));
 
         Style italic = doc.addStyle(STYLE_ITALIC, regular);
         StyleConstants.setItalic(italic, true);
