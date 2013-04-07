@@ -349,6 +349,7 @@ public class Screen implements IScreen {
         initOKButton();
         initCancelButton();
         importStory(existingStoryFile);
+        mainFrame.setTitle(TITLE + " - " + existingStoryFile.getName());
     }
     
     private void initOKButton() {

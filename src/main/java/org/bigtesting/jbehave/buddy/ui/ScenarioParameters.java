@@ -45,7 +45,14 @@ public class ScenarioParameters implements ParametersListener, ParametersProvide
 
     private void checkParamExists(String param) {
         if (!parameterValues.containsKey(param)) {
-            throw new IllegalArgumentException("unknown parameter");
+            /*
+             * NOTE: normally we would throw an Exception,
+             * but we're trying to accommodate the import
+             * process, which may not parse the parameters
+             * from the steps, such as in inline tables
+             */
+            //throw new IllegalArgumentException("unknown parameter");
+            parameterValues.put(param, new HashSet<String>());
         }
     }
 }
