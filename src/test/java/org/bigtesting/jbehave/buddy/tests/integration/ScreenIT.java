@@ -15,7 +15,7 @@ public class ScreenIT {
         
         Embedder embedder = new ScreenEmbedder();
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("src/test/resources"),
-                "Screen.story", "");
+                "Screen.story", "default.story");
         embedder.runStoriesAsPaths(storyPaths);
     }
 }

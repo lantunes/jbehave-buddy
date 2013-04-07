@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -135,7 +136,15 @@ public class Screen implements IScreen {
     
     private StoryModel storyModel;
     
+    /*
+     * a story file that comes in through the constructor 
+     */
     private File existingStoryFile;
+    
+    /*
+     * a story file that is opened in the application 
+     */
+    private File openedStoryFile;
     
     public Screen() {
         this(null);
@@ -264,6 +273,11 @@ public class Screen implements IScreen {
         openExistingStoryMenuItem.setName(OPEN_EXISTING_STORY_MENU_ITEM);
         fileMenu.add(openExistingStoryMenuItem);
         openExistingStoryMenuItem.setEnabled(!hasExistingStoryFile());
+        openExistingStoryMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                openExistingStory();
+            }
+        });
     }
     
     private void initExitMenuItem(JMenu fileMenu) {
@@ -304,17 +318,9 @@ public class Screen implements IScreen {
     }
     
     private void initExistingStory() {
-        
         initOKButton();
         initCancelButton();
-        
-        importStory();
-
-        if (storyModel != null && storyModel.hasScenarios()) {
-            prepareUIForExistingStory();
-        } else {
-            prepareUIForNewStory();
-        }
+        importStory(existingStoryFile);
     }
     
     private void initOKButton() {
@@ -342,12 +348,18 @@ public class Screen implements IScreen {
         });
     }
 
-    private void importStory() {
+    private void importStory(File storyFile) {
         try {
-            storyModel = new StoryImporter().importStory(existingStoryFile, this);
+            storyModel = new StoryImporter().importStory(storyFile, this);
         } catch (Exception e) {
             ExceptionFileWriter.writeException(e);
             JOptionPane.showMessageDialog(mainFrame, "there was an error parsing the story file: " + e.getMessage());
+        }
+        
+        if (storyModel != null && storyModel.hasScenarios()) {
+            prepareUIForExistingStory();
+        } else {
+            prepareUIForNewStory();
         }
     }
     
@@ -831,17 +843,34 @@ public class Screen implements IScreen {
     }
     
     private void newStory() {
-
+        if (!replaceCurrentStory()) {
+            return;
+        }
+        prepareUIForNewStory();
+    }
+    
+    private void openExistingStory() {
+        if (!replaceCurrentStory()) {
+            return;
+        }
+        JFileChooser fc = new JFileChooser();
+        int returnVal = fc.showOpenDialog(mainFrame);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            openedStoryFile = fc.getSelectedFile();
+            importStory(openedStoryFile);
+        }
+    }
+    
+    private boolean replaceCurrentStory() {
         if (storyModel != null) {
             int result = JOptionPane.showConfirmDialog(mainFrame, 
                     "All scenarios in the current story will be removed", 
                     "Warning", JOptionPane.WARNING_MESSAGE);
             if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
-                return;
+                return false;
             }
         }
-        
-        prepareUIForNewStory();
+        return true;
     }
     
     private void prepareUIForNewStory() {

@@ -2,6 +2,8 @@ package org.bigtesting.jbehave.buddy.tests.integration;
 
 import static org.bigtesting.jbehave.buddy.ui.Screen.*;
 
+import java.io.File;
+
 import org.bigtesting.jbehave.buddy.ui.Screen;
 import org.fest.assertions.Assertions;
 import org.fest.swing.edt.GuiActionRunner;
@@ -18,6 +20,8 @@ public class ScreenSteps {
 
     private FrameFixture screen;
     
+    /*------Given----------*/
+    
     @Given("a screen")
     public void createScreen() {
         Screen s = GuiActionRunner.execute(new GuiQuery<Screen>() {
@@ -28,6 +32,8 @@ public class ScreenSteps {
         screen = new FrameFixture(s.getFrame());
         screen.show();
     }
+    
+    /*-------When-----------*/
     
     @When("I type the steps: $steps")
     public void typeSteps(String steps) {
@@ -55,10 +61,36 @@ public class ScreenSteps {
         op.okButton().click();
     }
     
+    @When("I confirm that I want to open an existing story")
+    public void confirmOpenExistingStory() {
+        JOptionPaneFixture op = screen.optionPane();
+        op.okButton().click();
+        selectExistingStory();
+    }
+    
+    @When("I select an existing story")
+    public void selectExistingStory() {
+        screen.fileChooser()
+            .setCurrentDirectory(defaultStoryDirectory())
+            .selectFile(defaultStoryFile())
+            .approve();
+    }
+    
     @When("I decline that I want to create a new story")
     public void declineCreateNewStory() {
         JOptionPaneFixture op = screen.optionPane();
         op.cancelButton().click();
+    }
+    
+    @When("I decline that I want to open an existing story")
+    public void declineOpenExistingStory() {
+        JOptionPaneFixture op = screen.optionPane();
+        op.cancelButton().click();
+    }
+    
+    @When("I cancel opening an existing story")
+    public void cancelOpenExistingStory() {
+        screen.fileChooser().cancel();
     }
     
     @When("I decline to add a new scenario")
@@ -96,7 +128,14 @@ public class ScreenSteps {
         JOptionPaneFixture op = screen.optionPane();
         op.requireQuestionMessage();
         op.cancelButton().click();
-    } 
+    }
+    
+    @When("I select open existing story from the file menu") 
+    public void selectOpenExistingStoryFromFileMenu() {
+        screen.menuItem(OPEN_EXISTING_STORY_MENU_ITEM).click();
+    }
+    
+    /*------Then---------*/
     
     @Then("the steps editor is enabled")
     public void assertThatStepsEditorIsEnabled() {
@@ -264,7 +303,6 @@ public class ScreenSteps {
     @Then("the scenario combo box does not contain item \"$name\"")
     public void assertThatScenarioComboBoxDoesNotContainItem(String name) {
         navigateToScenariosTab();
-        screen.comboBox(SCENARIO_COMBO_BOX).requireItemCount(1);
         Assertions.assertThat(screen.comboBox(SCENARIO_COMBO_BOX).contents()).excludes(name);
     }
     
@@ -286,6 +324,14 @@ public class ScreenSteps {
     
     private void navigateToScenariosTab() {
         screen.tabbedPane(MAIN_TABS).selectTab(SCENARIOS_TAB_TITLE);
+    }
+    
+    private File defaultStoryFile() {
+        return new File("default.story");
+    }
+    
+    private File defaultStoryDirectory() {
+        return new File("src/test/resources");
     }
     
     @AfterScenario
