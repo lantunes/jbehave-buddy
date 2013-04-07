@@ -590,7 +590,7 @@ public class Screen implements IScreen {
     public JTextPane newStepsTextPane() {
         JTextPane textPane = new JTextPane();
         textPane.setName(TEXT_PANE);
-        textPane.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        textPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         textPane.getStyledDocument().addDocumentListener(new DocumentListener() {
             public void removeUpdate(DocumentEvent evt) {
                 EventQueue.invokeLater(new Runnable() {

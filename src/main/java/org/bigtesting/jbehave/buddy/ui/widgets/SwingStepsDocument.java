@@ -47,7 +47,7 @@ public class SwingStepsDocument implements StepsDocument {
         Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 
         Style regular = doc.addStyle(STYLE_REGULAR, def);
-        StyleConstants.setFontFamily(def, "SansSerif");
+        StyleConstants.setFontFamily(def, "Monospaced");
 
         Style bold = doc.addStyle(STYLE_BOLD, regular);
         StyleConstants.setBold(bold, true);
