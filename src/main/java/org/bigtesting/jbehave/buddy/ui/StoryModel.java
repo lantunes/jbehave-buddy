@@ -24,8 +24,28 @@ public class StoryModel {
         return scenarioModels.getSize() > 0;
     }
     
+    public boolean hasScenarioWithDescription(String description) {
+        for (int i = 0; i < scenarioModels.getSize(); i++) {
+            ScenarioModel model = (ScenarioModel)scenarioModels.getElementAt(i);
+            if (model.getDescription().equals(description)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public ScenarioModel getSelectedScenario() {
         return (ScenarioModel)scenarioModels.getSelectedItem();
+    }
+    
+    public void deleteSelectedScenario() {
+        scenarioModels.removeElement(scenarioModels.getSelectedItem());
+    }
+    
+    public void selectFirstScenario() {
+        if (hasScenarios()) {
+            scenarioModels.setSelectedItem(scenarioModels.getElementAt(0));
+        }
     }
     
     public String print() {

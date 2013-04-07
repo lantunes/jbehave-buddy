@@ -94,6 +94,8 @@ public class Screen implements IScreen {
     public static final String FILE_MENU = "fileMenu";
     public static final String HELP_MENU = "helpMenu";
     public static final String ABOUT_MENU_ITEM = "aboutMenuItem";
+    public static final String DELETE_SCENARIO_BUTTON = "deleteScenarioButton";
+    public static final String EDIT_SCENARIO_BUTTON = "editScenarioButton";
 
     private JFrame mainFrame;
     private JPanel mainPanel;
@@ -127,6 +129,8 @@ public class Screen implements IScreen {
     private JButton refreshStoryButton;
     private JButton okButton;
     private JButton cancelButton;
+    private JButton editScenarioButton;
+    private JButton deleteScenarioButton;
     private ParamValuesEditListAction editListAction;
     
     private StoryModel storyModel;
@@ -178,6 +182,8 @@ public class Screen implements IScreen {
         initScenarioLabel();
         initScenarioComboBox();
         initAddScenarioButton();
+        initEditScenarioButton();
+        initDeleteScenarioButton();
     }
 
     private void createStepsEditorControls() {
@@ -583,11 +589,11 @@ public class Screen implements IScreen {
     private void initScenarioTabs() {
         scenarioTabs = new JTabbedPane(JTabbedPane.TOP);
         scenarioTabs.setName(SCENARIO_TABS);
-        scenariosTabPanel.add(scenarioTabs, "cell 0 1 3 1,grow");
+        scenariosTabPanel.add(scenarioTabs, "cell 0 1 5 1,grow");
     }
 
     private void initAddScenarioButton() {
-        addScenarioButton = new JButton("Add...");
+        addScenarioButton = new JButton("Add");
         addScenarioButton.setName(ADD_SCENARIO_BUTTON);
         addScenarioButton.setEnabled(false);
         scenariosTabPanel.add(addScenarioButton, "cell 2 0");
@@ -598,6 +604,30 @@ public class Screen implements IScreen {
         });
     }
 
+    private void initEditScenarioButton() {
+        editScenarioButton = new JButton("Edit");
+        editScenarioButton.setName(EDIT_SCENARIO_BUTTON);
+        editScenarioButton.setEnabled(false);
+        scenariosTabPanel.add(editScenarioButton, "cell 3 0");
+        editScenarioButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                editScenario();
+            }
+        });
+    }
+    
+    private void initDeleteScenarioButton() {
+        deleteScenarioButton = new JButton("Delete");
+        deleteScenarioButton.setName(DELETE_SCENARIO_BUTTON);
+        deleteScenarioButton.setEnabled(false);
+        scenariosTabPanel.add(deleteScenarioButton, "cell 4 0");
+        deleteScenarioButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteScenario();
+            }
+        });
+    }
+    
     private void initScenarioComboBox() {
         scenarioComboBox = new JComboBox();
         scenarioComboBox.setName(SCENARIO_COMBO_BOX);
@@ -744,9 +774,7 @@ public class Screen implements IScreen {
     }
     
     private void addNewScenario() {
-        
         String description = JOptionPane.showInputDialog(mainFrame, "Description: ");
-        
         if (description == null || description.trim().length() == 0) {
             return;
         }
@@ -754,6 +782,37 @@ public class Screen implements IScreen {
         parametersList.clearSelection();
         storyModel.addScenario(description, this);
         enableControls(true);
+    }
+    
+    private void editScenario() {
+        String description = JOptionPane.showInputDialog(mainFrame, "Description: ", 
+                storyModel.getSelectedScenario().getDescription());
+        if (description == null || description.trim().length() == 0) {
+            return;
+        }
+        if (storyModel.hasScenarioWithDescription(description)) {
+            JOptionPane.showMessageDialog(mainFrame, 
+                    "Scenario with that description already exists.", 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        storyModel.getSelectedScenario().setDescription(description);
+        scenarioComboBox.repaint();
+    }
+    
+    private void deleteScenario() {
+        int response = JOptionPane.showConfirmDialog(mainFrame, 
+                "Deleting the selected scenario is irreversible. Do you wish to continue?", 
+                "Deleting Scenario",  JOptionPane.WARNING_MESSAGE);
+        if (response != JOptionPane.YES_OPTION) {
+            return;
+        }
+        storyModel.deleteSelectedScenario();
+        if (storyModel.hasScenarios()) {
+            storyModel.selectFirstScenario();
+        } else {
+            prepareUIForNewStory();
+        }
     }
     
     private void scenarioChanged() {
@@ -803,6 +862,8 @@ public class Screen implements IScreen {
     
     private void enableControls(boolean enabled) {
         scenarioComboBox.setEnabled(enabled);
+        editScenarioButton.setEnabled(enabled);
+        deleteScenarioButton.setEnabled(enabled);
         generateExamplesButton.setEnabled(enabled);
         copyTextButton.setEnabled(enabled);
         refreshStoryButton.setEnabled(enabled);

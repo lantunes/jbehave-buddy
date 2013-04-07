@@ -3,6 +3,7 @@ package org.bigtesting.jbehave.buddy.tests.integration;
 import static org.bigtesting.jbehave.buddy.ui.Screen.*;
 
 import org.bigtesting.jbehave.buddy.ui.Screen;
+import org.fest.assertions.Assertions;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
 import org.fest.swing.fixture.FrameFixture;
@@ -67,6 +68,35 @@ public class ScreenSteps {
         op.textBox().setText("Test");
         op.cancelButton().click();
     }
+    
+    @When("I edit the scenario description changing it to \"$title\"")
+    public void editScenario(String title) {
+        navigateToScenariosTab();
+        screen.button(EDIT_SCENARIO_BUTTON).click();
+        JOptionPaneFixture op = screen.optionPane();
+        op.textBox().setText(title);
+        op.okButton().click();
+    }
+    
+    @When("I delete the scenario")
+    public void deleteScenario() {
+        navigateToScenariosTab();
+        screen.button(DELETE_SCENARIO_BUTTON).click();
+    }
+    
+    @When("I accept that I want to delete the scenario")
+    public void acceptDeleteScenario() {
+        JOptionPaneFixture op = screen.optionPane();
+        op.requireQuestionMessage();
+        op.okButton().click();
+    } 
+    
+    @When("I decline that I want to delete the scenario")
+    public void declineDeleteScenario() {
+        JOptionPaneFixture op = screen.optionPane();
+        op.requireQuestionMessage();
+        op.cancelButton().click();
+    } 
     
     @Then("the steps editor is enabled")
     public void assertThatStepsEditorIsEnabled() {
@@ -194,10 +224,48 @@ public class ScreenSteps {
         screen.button(ADD_SCENARIO_BUTTON).requireEnabled();
     }
     
+    @Then("the edit scenario button is disabled")
+    public void assertEditScenarioButtonIsDisabled() {
+        navigateToScenariosTab();
+        screen.button(EDIT_SCENARIO_BUTTON).requireDisabled();
+    }
+    
+    @Then("the edit scenario button is enabled")
+    public void assertEditScenarioButtonIsEnabled() {
+        navigateToScenariosTab();
+        screen.button(EDIT_SCENARIO_BUTTON).requireEnabled();
+    }
+    
+    @Then("the delete scenario button is disabled")
+    public void assertDeleteScenarioButtonIsDisabled() {
+        navigateToScenariosTab();
+        screen.button(DELETE_SCENARIO_BUTTON).requireDisabled();
+    }
+    
+    @Then("the delete scenario button is enabled")
+    public void assertDeleteScenarioButtonIsEnabled() {
+        navigateToScenariosTab();
+        screen.button(DELETE_SCENARIO_BUTTON).requireEnabled();
+    }
+    
     @Then("I am warned that I am about to lose my work")
     public void assertThatWarningAppearsIfNewStorySelected() {
         JOptionPaneFixture op = screen.optionPane();
         op.requireQuestionMessage();
+    }
+    
+    @Then("I am warned that the scenario description already exists")
+    public void assertThatWarningAppearsIfExistingDescriptionEntered() {
+        JOptionPaneFixture op = screen.optionPane();
+        op.requireErrorMessage();
+        op.okButton().click();
+    }
+    
+    @Then("the scenario combo box does not contain item \"$name\"")
+    public void assertThatScenarioComboBoxDoesNotContainItem(String name) {
+        navigateToScenariosTab();
+        screen.comboBox(SCENARIO_COMBO_BOX).requireItemCount(1);
+        Assertions.assertThat(screen.comboBox(SCENARIO_COMBO_BOX).contents()).excludes(name);
     }
     
     /*--------------*/

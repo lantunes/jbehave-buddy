@@ -15,7 +15,7 @@ import org.bigtesting.jbehave.buddy.util.ExamplesFormatter;
 
 public class ScenarioModel {
 
-    private final String description;
+    private String description;
     
     private ScenarioParameters params;
     private ExamplesGenerator examplesGenerator;
@@ -129,6 +129,10 @@ public class ScenarioModel {
     
     public String getDescription() {
         return description;
+    }
+    
+    public void setDescription(String description) {
+        this.description = description;
     }
     
     public String toString() {

@@ -10,6 +10,8 @@ And the copy to clipboard button is disabled
 And the refresh story button is disabled
 And the scenario combo box is disabled
 And the add scenario button is disabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
 
 
 Scenario: selecting new story from the file menu enables add scenario button only
@@ -25,6 +27,8 @@ And the copy to clipboard button is disabled
 And the refresh story button is disabled
 And the scenario combo box is disabled
 And the add scenario button is enabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
 
 
 Scenario: adding a new scenario enables the controls
@@ -42,6 +46,8 @@ And the remove example button is disabled
 And the copy to clipboard button is enabled
 And the refresh story button is enabled
 And the add scenario button is enabled
+And the edit scenario button is enabled
+And the delete scenario button is enabled
 
 
 Scenario: adding a new scenario works only if there is a description
@@ -58,6 +64,8 @@ And the copy to clipboard button is disabled
 And the refresh story button is disabled
 And the scenario combo box is disabled
 And the add scenario button is enabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
 
 
 Scenario: adding a new scenario works only if there is a non-empty description
@@ -74,6 +82,8 @@ And the copy to clipboard button is disabled
 And the refresh story button is disabled
 And the scenario combo box is disabled
 And the add scenario button is enabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
 
 
 Scenario: adding a new scenario does not work if the user clicks cancel
@@ -90,6 +100,8 @@ And the copy to clipboard button is disabled
 And the refresh story button is disabled
 And the scenario combo box is disabled
 And the add scenario button is enabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
 
 
 Scenario: adding a new story prompts the user if another story is open
@@ -117,6 +129,8 @@ And the copy to clipboard button is disabled
 And the refresh story button is disabled
 And the scenario combo box is disabled
 And the add scenario button is enabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
 
 
 Scenario: not proceeding with a new story when another story is open
@@ -136,4 +150,107 @@ And the remove example button is disabled
 And the copy to clipboard button is enabled
 And the refresh story button is enabled
 And the add scenario button is enabled
+And the edit scenario button is enabled
+And the delete scenario button is enabled
 
+
+Scenario: editing a story description
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I edit the scenario description changing it to "Test2"
+Then the scenario combo box has selected item "Test2"
+
+
+Scenario: editing a story description by entering no description
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I edit the scenario description changing it to ""
+Then the scenario combo box has selected item "Test"
+
+
+Scenario: editing a story description by entering blank description
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I edit the scenario description changing it to " "
+Then the scenario combo box has selected item "Test"
+
+
+Scenario: editing a story description by entering an existing description
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I add a new scenario called "Test2"
+And I edit the scenario description changing it to "Test"
+Then I am warned that the scenario description already exists
+And the scenario combo box has selected item "Test2"
+
+
+Scenario: deleting the only scenario
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I delete the scenario
+And I accept that I want to delete the scenario
+Then the add param value button is disabled
+And the remove param value button is disabled
+And the generate examples button is disabled
+And the add example button is disabled
+And the remove example button is disabled
+And the copy to clipboard button is disabled
+And the refresh story button is disabled
+And the scenario combo box is disabled
+And the add scenario button is enabled
+And the edit scenario button is disabled
+And the delete scenario button is disabled
+
+
+Scenario: declining to delete the only scenario
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I delete the scenario
+And I decline that I want to delete the scenario
+Then the scenario combo box is enabled
+And the scenario combo box has selected item "Test"
+And the add param value button is disabled
+And the remove param value button is disabled
+And the generate examples button is enabled
+And the add example button is disabled
+And the remove example button is disabled
+And the copy to clipboard button is enabled
+And the refresh story button is enabled
+And the add scenario button is enabled
+And the edit scenario button is enabled
+And the delete scenario button is enabled
+
+
+Scenario: deleting a scenario when more than one exists
+
+Given a screen
+When I select new story from the file menu
+And I add a new scenario called "Test"
+And I add a new scenario called "Test2"
+And I delete the scenario
+And I accept that I want to delete the scenario
+Then the scenario combo box is enabled
+And the scenario combo box has selected item "Test"
+And the scenario combo box does not contain item "Test2"
+And the add param value button is disabled
+And the remove param value button is disabled
+And the generate examples button is enabled
+And the add example button is disabled
+And the remove example button is disabled
+And the copy to clipboard button is enabled
+And the refresh story button is enabled
+And the add scenario button is enabled
+And the edit scenario button is enabled
+And the delete scenario button is enabled
