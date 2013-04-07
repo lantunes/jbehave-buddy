@@ -30,6 +30,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -97,6 +98,7 @@ public class Screen implements IScreen {
     public static final String ABOUT_MENU_ITEM = "aboutMenuItem";
     public static final String DELETE_SCENARIO_BUTTON = "deleteScenarioButton";
     public static final String EDIT_SCENARIO_BUTTON = "editScenarioButton";
+    public static final String SAVE_MENU_ITEM = "saveMenuItem";
 
     private JFrame mainFrame;
     private JPanel mainPanel;
@@ -132,6 +134,7 @@ public class Screen implements IScreen {
     private JButton cancelButton;
     private JButton editScenarioButton;
     private JButton deleteScenarioButton;
+    private JMenuItem saveMenuItem;
     private ParamValuesEditListAction editListAction;
     
     private StoryModel storyModel;
@@ -253,19 +256,24 @@ public class Screen implements IScreen {
 
         initNewStoryMenuItem(fileMenu);
         initOpenExistingStoryMenuItem(fileMenu);
+        initSaveMenuItem(fileMenu);
         initExitMenuItem(fileMenu);
     }
 
     private void initNewStoryMenuItem(JMenu fileMenu) {
         JMenuItem newStoryMenuItem = new JMenuItem("New story...");
         newStoryMenuItem.setName(NEW_STORY_MENU_ITEM);
+        fileMenu.add(newStoryMenuItem);
+        newStoryMenuItem.setEnabled(!hasExistingStoryFile());
+        newStoryMenuItem.setMnemonic('N');
+        newStoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                java.awt.event.KeyEvent.VK_N, 
+                java.awt.Event.CTRL_MASK));
         newStoryMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 newStory();
             }
         });
-        fileMenu.add(newStoryMenuItem);
-        newStoryMenuItem.setEnabled(!hasExistingStoryFile());
     }
     
     private void initOpenExistingStoryMenuItem(JMenu fileMenu) {
@@ -273,9 +281,29 @@ public class Screen implements IScreen {
         openExistingStoryMenuItem.setName(OPEN_EXISTING_STORY_MENU_ITEM);
         fileMenu.add(openExistingStoryMenuItem);
         openExistingStoryMenuItem.setEnabled(!hasExistingStoryFile());
+        openExistingStoryMenuItem.setMnemonic('O');
+        openExistingStoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                java.awt.event.KeyEvent.VK_O, 
+                java.awt.Event.CTRL_MASK));
         openExistingStoryMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 openExistingStory();
+            }
+        });
+    }
+    
+    private void initSaveMenuItem(JMenu fileMenu) {
+        saveMenuItem = new JMenuItem("Save...");
+        saveMenuItem.setName(SAVE_MENU_ITEM);
+        fileMenu.add(saveMenuItem);
+        saveMenuItem.setEnabled(false);
+        saveMenuItem.setMnemonic('S');
+        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
+                java.awt.event.KeyEvent.VK_S, 
+                java.awt.Event.CTRL_MASK));
+        saveMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                saveStory();
             }
         });
     }
@@ -847,6 +875,7 @@ public class Screen implements IScreen {
             return;
         }
         prepareUIForNewStory();
+        setOpenedStoryFile(null);
     }
     
     private void openExistingStory() {
@@ -856,7 +885,7 @@ public class Screen implements IScreen {
         JFileChooser fc = new JFileChooser();
         int returnVal = fc.showOpenDialog(mainFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            openedStoryFile = fc.getSelectedFile();
+            setOpenedStoryFile(fc.getSelectedFile());
             importStory(openedStoryFile);
         }
     }
@@ -873,12 +902,39 @@ public class Screen implements IScreen {
         return true;
     }
     
+    private void saveStory() {
+        if (openedStoryFile == null) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.showSaveDialog(mainFrame);
+            setOpenedStoryFile(chooser.getSelectedFile());
+        }
+        if (openedStoryFile != null) {
+            try {
+                new StoryExporter().exportToFile(openedStoryFile, storyModel);
+            } catch (Exception e) {
+                ExceptionFileWriter.writeException(e);
+                JOptionPane.showMessageDialog(mainFrame, "There was an error saving.", 
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void setOpenedStoryFile(File file) {
+        openedStoryFile = file;
+        mainFrame.setTitle(file != null ? TITLE + " - " + file.getAbsolutePath() : TITLE);
+    }
+    
     private void prepareUIForNewStory() {
         storyModel = new StoryModel();
         scenarioComboBox.setModel(storyModel.getComboBoxModel());
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
         enableControls(false);
+        enableOrDisableSavedMenuItem();
+    }
+    
+    private void enableOrDisableSavedMenuItem() {
+        saveMenuItem.setEnabled(storyModel != null && !hasExistingStoryFile());
     }
     
     private void prepareUIForExistingStory() {
@@ -886,6 +942,7 @@ public class Screen implements IScreen {
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
         enableControls(true);
+        enableOrDisableSavedMenuItem();
         scenarioChanged();
     }
     
