@@ -198,7 +198,7 @@
                         </goals>
                         <configuration>
                             <headerType>gui</headerType>
-                            <outfile>target/jbehave-buddy-v${project.version}.exe</outfile>
+                            <outfile>target/jbehave-buddy.exe</outfile>
                             <jar>target/jbehave-buddy-${project.version}-jar-with-dependencies.jar</jar>
                             <errTitle>JBehave BuDDy</errTitle>
                             <jre>
