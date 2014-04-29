@@ -2,9 +2,9 @@ package org.bigtesting.jbehave.buddy.tests.ui.editor;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import org.bigtesting.jbehave.buddy.core.ui.EditorStyle;
+import org.bigtesting.jbehave.buddy.core.ui.editor.StepsEditorModel;
 import org.bigtesting.jbehave.buddy.tests.ui.editor.TestableStepsDocument.HighlightedItem;
-import org.bigtesting.jbehave.buddy.ui.EditorStyle;
-import org.bigtesting.jbehave.buddy.ui.editor.StepsEditorModel;
 import org.junit.Test;
 
 public class TestStepsEditorModel {

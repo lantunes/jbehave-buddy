@@ -1,6 +1,6 @@
 package org.bigtesting.jbehave.buddy.tests.util;
 
-import org.bigtesting.jbehave.buddy.util.ExamplesFormatter;
+import org.bigtesting.jbehave.buddy.core.util.ExamplesFormatter;
 import org.junit.Assert;
 import org.junit.Test;
 

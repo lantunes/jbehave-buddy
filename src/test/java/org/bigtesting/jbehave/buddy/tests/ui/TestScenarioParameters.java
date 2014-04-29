@@ -5,7 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bigtesting.jbehave.buddy.ui.ScenarioParameters;
+import org.bigtesting.jbehave.buddy.core.ui.ScenarioParameters;
 import org.junit.Test;
 
 public class TestScenarioParameters {

@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.bigtesting.jbehave.buddy.ui.ExamplesGenerator;
-import org.bigtesting.jbehave.buddy.ui.ParametersProvider;
-import org.bigtesting.jbehave.buddy.util.StringUtil;
+import org.bigtesting.jbehave.buddy.core.ui.ExamplesGenerator;
+import org.bigtesting.jbehave.buddy.core.ui.ParametersProvider;
+import org.bigtesting.jbehave.buddy.core.util.StringUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

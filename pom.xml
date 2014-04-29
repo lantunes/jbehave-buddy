@@ -178,7 +178,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.bigtesting.jbehave.buddy.Main</mainClass>
+                                    <mainClass>org.bigtesting.jbehave.buddy.standalone.Main</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

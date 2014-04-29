@@ -1,10 +1,10 @@
 package org.bigtesting.jbehave.buddy.tests.integration;
 
-import static org.bigtesting.jbehave.buddy.ui.Screen.*;
+import static org.bigtesting.jbehave.buddy.core.ui.Screen.*;
 
 import java.io.File;
 
-import org.bigtesting.jbehave.buddy.ui.Screen;
+import org.bigtesting.jbehave.buddy.core.ui.Screen;
 import org.fest.assertions.Assertions;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;

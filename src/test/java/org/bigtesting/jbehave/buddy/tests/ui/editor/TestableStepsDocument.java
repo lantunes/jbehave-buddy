@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.bigtesting.jbehave.buddy.ui.EditorStyle;
-import org.bigtesting.jbehave.buddy.ui.StepsDocument;
+import org.bigtesting.jbehave.buddy.core.ui.EditorStyle;
+import org.bigtesting.jbehave.buddy.core.ui.StepsDocument;
 
 public class TestableStepsDocument implements StepsDocument {
 

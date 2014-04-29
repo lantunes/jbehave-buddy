@@ -3,7 +3,7 @@ package org.bigtesting.jbehave.buddy.tests.ui.editor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bigtesting.jbehave.buddy.ui.editor.ParametersListener;
+import org.bigtesting.jbehave.buddy.core.ui.editor.ParametersListener;
 
 public class TestableParametersListener implements ParametersListener {
 
