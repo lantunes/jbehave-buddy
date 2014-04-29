@@ -1,0 +1,48 @@
+<idea-plugin version="2">
+  <id>org.bigtesting.jbehave.buddy</id>
+  <name>JBehave BuDDy</name>
+  <version>0.1</version>
+  <vendor email="lantunes@gmail.com" url="http://bigtesting.org">BigTesting.org</vendor>
+
+  <description><![CDATA[
+      JBehave Story file editor.
+    ]]></description>
+
+  <change-notes><![CDATA[
+    ]]>
+  </change-notes>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+  <idea-version since-build="131"/>
+
+  <!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <application-components>
+    <!-- Add your application components here -->
+  </application-components>
+
+  <project-components>
+    <!-- Add your project components here -->
+  </project-components>
+
+  <actions>
+    <!-- Add your actions here -->
+      <!--<action id="somePlugin" class="SomePlugin" text="Some Plugin" description="dfdfsd df sdsdf"/>-->
+  </actions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileTypeFactory implementation="org.bigtesting.jbehave.buddy.intellij.JBehaveStoryFileTypeFactory"/>
+    <fileEditorProvider implementation="org.bigtesting.jbehave.buddy.intellij.JBehaveStoryEditorProvider"/>
+    <!--<applicationService serviceInterface="MarkdownGlobalSettings" serviceImplementation="MarkdownGlobalSettings"/>-->
+    <!--<applicationConfigurable instance="MarkdownGlobalSettingsConfigurable"/>&ndash;&gt;-->
+  </extensions>
+
+</idea-plugin>
