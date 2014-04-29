@@ -5,7 +5,6 @@ import java.io.File;
 
 import javax.swing.UIManager;
 
-import org.bigtesting.jbehave.buddy.core.ui.Screen;
 import org.bigtesting.jbehave.buddy.core.util.ExceptionFileWriter;
 
 public class Main {
@@ -28,7 +27,7 @@ public class Main {
                         storyFile = new File(args[0]);
                     }
                     
-                    Screen screen = new Screen(storyFile);
+                    StandaloneScreen screen = new StandaloneScreen(storyFile);
                     screen.display();
 
                 } catch (Exception e) {

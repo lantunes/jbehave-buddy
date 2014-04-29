@@ -1,6 +1,5 @@
 package org.bigtesting.jbehave.buddy.core.ui;
 
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -8,21 +7,14 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,7 +22,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
@@ -47,60 +38,10 @@ import org.bigtesting.jbehave.buddy.core.ui.widgets.ListAction;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ParamValuesEditListAction;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.StepsTextPane;
 import org.bigtesting.jbehave.buddy.core.util.ExceptionFileWriter;
+import org.bigtesting.jbehave.buddy.core.util.Resources;
 
 public class Screen implements IScreen {
 
-    private static final String TITLE = "JBehave BuDDy";
-    private static final String version = "0.1";
-    
-    public static final String EXAMPLES_TAB_TITLE = "Examples";
-    public static final String STORY_TAB_TITLE = "Story";
-    public static final String SCENARIOS_TAB_TITLE = "Scenarios";
-    public static final String STEPS_TAB_TITLE = "Steps";
-    public static final String MAIN_FRAME = "mainFrame";
-    public static final String MAIN_PANEL = "mainPanel";
-    public static final String MAIN_TABS = "mainTabs";
-    public static final String SCENARIOS_TAB_PANEL = "scenariosTabPanel";
-    public static final String SCENARIO_LABEL = "scenarioLabel";
-    public static final String SCENARIO_COMBO_BOX = "scenarioComboBox";
-    public static final String ADD_SCENARIO_BUTTON = "addScenarioButton";
-    public static final String SCENARIO_TABS = "scenarioTabs";
-    public static final String STEPS_TAB_PANEL = "stepsTabPanel";
-    public static final String STEPS_SCROLL_PANE = "stepsScrollPane";
-    public static final String TEXT_PANE = "textPane";
-    public static final String PARAMETERS_PANEL = "parametersPanel";
-    public static final String PARAMETERS_SCROLL_PANE = "parametersScrollPane";
-    public static final String PARAMETERS_LIST = "parametersList";
-    public static final String GENERATE_EXAMPLES_BUTTON = "generateExamplesButton";
-    public static final String EXAMPLES_SCROLL_PANE = "examplesScrollPane";
-    public static final String EXAMPLES_TAB_PANEL = "examplesTabPanel";
-    public static final String REMOVE_PARAM_VALUE_BUTTON = "removeParamValueButton";
-    public static final String ADD_PARAM_VALUE_BUTTON = "addParamValueButton";
-    public static final String PARAMETER_VALUES_LIST = "parameterValuesList";
-    public static final String PARAMETER_VALUES_SCROLL_PANE = "parameterValuesScrollPane";
-    public static final String PARAMETER_VALUES_PANEL = "parameterValuesPanel";
-    public static final String EXAMPLES_TABLE = "examplesTable";
-    public static final String NUM_EXAMPLES_LABEL = "numExamplesLabel";
-    public static final String ADD_EXAMPLE_BUTTON = "addExampleButton";
-    public static final String REMOVE_EXAMPLE_BUTTON = "removeExampleButton";
-    public static final String STORY_TAB_PANEL = "storyTabPanel";
-    public static final String STORY_SCROLL_PANE = "storyScrollPane";
-    public static final String STORY_TEXT_AREA = "storyTextArea";
-    public static final String COPY_TEXT_BUTTON = "copyTextButton";
-    public static final String REFRESH_STORY_BUTTON = "refreshStoryButton";
-    public static final String OK_BUTTON = "okButton";
-    public static final String CANCEL_BUTTON = "cancelButton";
-    public static final String EXIT_MENU_ITEM = "exitMenuItem";
-    public static final String OPEN_EXISTING_STORY_MENU_ITEM = "openExistingStoryMenuItem";
-    public static final String NEW_STORY_MENU_ITEM = "newStoryMenuItem";
-    public static final String FILE_MENU = "fileMenu";
-    public static final String HELP_MENU = "helpMenu";
-    public static final String ABOUT_MENU_ITEM = "aboutMenuItem";
-    public static final String DELETE_SCENARIO_BUTTON = "deleteScenarioButton";
-    public static final String EDIT_SCENARIO_BUTTON = "editScenarioButton";
-    public static final String SAVE_MENU_ITEM = "saveMenuItem";
-
-    private JFrame mainFrame;
     private JPanel mainPanel;
     private JTabbedPane mainTabs;
     private JPanel scenariosTabPanel;
@@ -134,7 +75,6 @@ public class Screen implements IScreen {
     private JButton cancelButton;
     private JButton editScenarioButton;
     private JButton deleteScenarioButton;
-    private JMenuItem saveMenuItem;
     private ParamValuesEditListAction editListAction;
     
     private StoryModel storyModel;
@@ -149,21 +89,20 @@ public class Screen implements IScreen {
      */
     private File openedStoryFile;
     
-    public Screen() {
-        this(null);
+    private final ScreenContext screenContext;
+    
+    public Screen(ScreenContext screenContext) {
+        this(null, screenContext);
     }
     
-    public Screen(File existingStoryFile) {
+    public Screen(File existingStoryFile, ScreenContext screenContext) {
         this.existingStoryFile = existingStoryFile;
+        this.screenContext = screenContext;
         initialize();
     }
     
-    public JFrame getFrame() {
-        return mainFrame;
-    }
-
-    public void display() {
-        mainFrame.setVisible(true);
+    public JPanel getMainPanel() {
+        return mainPanel;
     }
 
     private void initialize() {
@@ -183,8 +122,6 @@ public class Screen implements IScreen {
 
         createStoryTab();
 
-        initMenuBar();
-        
         if (hasExistingStoryFile()) {
             initExistingStory();
         }
@@ -236,143 +173,38 @@ public class Screen implements IScreen {
     }
 
     private void initMainControls() {
-        initMainFrame();
         initMainPanel();
         initMainTabs();
     }
 
-    private void initMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-        mainFrame.setJMenuBar(menuBar);
-
-        initFileMenu(menuBar);
-        initHelpMenu(menuBar);
-    }
-
-    private void initFileMenu(JMenuBar menuBar) {
-        JMenu fileMenu = new JMenu("File");
-        fileMenu.setName(FILE_MENU);
-        menuBar.add(fileMenu);
-
-        initNewStoryMenuItem(fileMenu);
-        initOpenExistingStoryMenuItem(fileMenu);
-        initSaveMenuItem(fileMenu);
-        initExitMenuItem(fileMenu);
-    }
-
-    private void initNewStoryMenuItem(JMenu fileMenu) {
-        JMenuItem newStoryMenuItem = new JMenuItem("New story...");
-        newStoryMenuItem.setName(NEW_STORY_MENU_ITEM);
-        fileMenu.add(newStoryMenuItem);
-        newStoryMenuItem.setEnabled(!hasExistingStoryFile());
-        newStoryMenuItem.setMnemonic('N');
-        newStoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                java.awt.event.KeyEvent.VK_N, 
-                java.awt.Event.CTRL_MASK));
-        newStoryMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                newStory();
-            }
-        });
-    }
-    
-    private void initOpenExistingStoryMenuItem(JMenu fileMenu) {
-        JMenuItem openExistingStoryMenuItem = new JMenuItem("Open existing story...");
-        openExistingStoryMenuItem.setName(OPEN_EXISTING_STORY_MENU_ITEM);
-        fileMenu.add(openExistingStoryMenuItem);
-        openExistingStoryMenuItem.setEnabled(!hasExistingStoryFile());
-        openExistingStoryMenuItem.setMnemonic('O');
-        openExistingStoryMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                java.awt.event.KeyEvent.VK_O, 
-                java.awt.Event.CTRL_MASK));
-        openExistingStoryMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                openExistingStory();
-            }
-        });
-    }
-    
-    private void initSaveMenuItem(JMenu fileMenu) {
-        saveMenuItem = new JMenuItem("Save...");
-        saveMenuItem.setName(SAVE_MENU_ITEM);
-        fileMenu.add(saveMenuItem);
-        saveMenuItem.setEnabled(false);
-        saveMenuItem.setMnemonic('S');
-        saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(
-                java.awt.event.KeyEvent.VK_S, 
-                java.awt.Event.CTRL_MASK));
-        saveMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                saveStory();
-            }
-        });
-    }
-    
-    private void initExitMenuItem(JMenu fileMenu) {
-        JMenuItem exitMenuItem = new JMenuItem("Exit");
-        exitMenuItem.setName(EXIT_MENU_ITEM);
-        exitMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                close();
-            }
-        });
-        fileMenu.add(exitMenuItem);
-    }
-    
-    private void initHelpMenu(JMenuBar menuBar) {
-        JMenu helpMenu = new JMenu("Help");
-        helpMenu.setName(HELP_MENU);
-        menuBar.add(helpMenu);
-        
-        initAboutMenuItem(helpMenu);
-    }
-
-    private void initAboutMenuItem(JMenu helpMenu) {
-        JMenuItem aboutMenuItem = new JMenuItem("About");
-        aboutMenuItem.setName(ABOUT_MENU_ITEM);
-        aboutMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                JOptionPane.showMessageDialog(mainFrame, 
-                        TITLE + " version " + version, 
-                        "About", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
-        helpMenu.add(aboutMenuItem);
-    }
-    
-    private void close() {
-        mainFrame.setVisible(false);
-        mainFrame.dispose();
-    }
-    
     private void initExistingStory() {
         initOKButton();
         initCancelButton();
         importStory(existingStoryFile);
-        mainFrame.setTitle(TITLE + " - " + existingStoryFile.getName());
+        screenContext.setTitle(Resources.TITLE + " - " + existingStoryFile.getName());
     }
     
     private void initOKButton() {
         okButton = new JButton("OK");
-        okButton.setName(OK_BUTTON);
+        okButton.setName(Resources.OK_BUTTON);
         okButton.setEnabled(true);
         mainPanel.add(okButton, "flowx,cell 0 1,alignx right,aligny bottom");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 new StoryExporter().export(storyModel);
-                close();
+                screenContext.close();
             }
         });
     }
     
     private void initCancelButton() {
         cancelButton = new JButton("Cancel");
-        cancelButton.setName(CANCEL_BUTTON);
+        cancelButton.setName(Resources.CANCEL_BUTTON);
         cancelButton.setEnabled(true);
         mainPanel.add(cancelButton, "cell 0 1,alignx right,aligny bottom");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                close();
+                screenContext.close();
             }
         });
     }
@@ -382,7 +214,7 @@ public class Screen implements IScreen {
             storyModel = new StoryImporter().importStory(storyFile, this);
         } catch (Exception e) {
             ExceptionFileWriter.writeException(e);
-            JOptionPane.showMessageDialog(mainFrame, "there was an error parsing the story file: " + e.getMessage());
+            JOptionPane.showMessageDialog(mainPanel, "there was an error parsing the story file: " + e.getMessage());
         }
         
         if (storyModel != null && storyModel.hasScenarios()) {
@@ -394,7 +226,7 @@ public class Screen implements IScreen {
     
     private void initRefreshStoryButton() {
         refreshStoryButton = new JButton("Refresh");
-        refreshStoryButton.setName(REFRESH_STORY_BUTTON);
+        refreshStoryButton.setName(Resources.REFRESH_STORY_BUTTON);
         refreshStoryButton.setEnabled(false);
         storyTabPanel.add(refreshStoryButton, "cell 0 1,alignx right,aligny bottom");
         refreshStoryButton.addActionListener(new ActionListener() {
@@ -410,7 +242,7 @@ public class Screen implements IScreen {
 
     private void initCopyTextButton() {
         copyTextButton = new JButton("Copy to clipboard");
-        copyTextButton.setName(COPY_TEXT_BUTTON);
+        copyTextButton.setName(Resources.COPY_TEXT_BUTTON);
         copyTextButton.setEnabled(false);
         storyTabPanel.add(copyTextButton, "flowx,cell 0 1,alignx right,aligny bottom");
         copyTextButton.addActionListener(new ActionListener() {
@@ -422,7 +254,7 @@ public class Screen implements IScreen {
 
     private void initStoryTextArea() {
         storyTextArea = new JTextArea();
-        storyTextArea.setName(STORY_TEXT_AREA);
+        storyTextArea.setName(Resources.STORY_TEXT_AREA);
         storyTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         storyTextArea.setEditable(false);
         storyScrollPane.setViewportView(storyTextArea);
@@ -430,20 +262,20 @@ public class Screen implements IScreen {
 
     private void initStoryScrollPane() {
         storyScrollPane = new JScrollPane();
-        storyScrollPane.setName(STORY_SCROLL_PANE);
+        storyScrollPane.setName(Resources.STORY_SCROLL_PANE);
         storyTabPanel.add(storyScrollPane, "cell 0 0,grow");
     }
 
     private void initStoryTabPanel() {
         storyTabPanel = new JPanel();
-        storyTabPanel.setName(STORY_TAB_PANEL);
-        mainTabs.addTab(STORY_TAB_TITLE, null, storyTabPanel, null);
+        storyTabPanel.setName(Resources.STORY_TAB_PANEL);
+        mainTabs.addTab(Resources.STORY_TAB_TITLE, null, storyTabPanel, null);
         storyTabPanel.setLayout(new MigLayout("", "[grow]", "[grow][]"));
     }
 
     private void initRemoveExampleButton() {
         removeExampleButton = new JButton("Remove");
-        removeExampleButton.setName(REMOVE_EXAMPLE_BUTTON);
+        removeExampleButton.setName(Resources.REMOVE_EXAMPLE_BUTTON);
         removeExampleButton.setEnabled(false);
         examplesTabPanel.add(removeExampleButton, "cell 1 2,alignx right,aligny bottom");
         removeExampleButton.addActionListener(new ActionListener() {
@@ -455,7 +287,7 @@ public class Screen implements IScreen {
 
     private void initAddExampleButton() {
         addExampleButton = new JButton("Add");
-        addExampleButton.setName(ADD_EXAMPLE_BUTTON);
+        addExampleButton.setName(Resources.ADD_EXAMPLE_BUTTON);
         addExampleButton.setEnabled(false);
         examplesTabPanel.add(addExampleButton, "flowx,cell 1 2,alignx right,aligny bottom");
         addExampleButton.addActionListener(new ActionListener() {
@@ -467,20 +299,20 @@ public class Screen implements IScreen {
 
     private void initNumExamplesLabel() {
         numExamplesLabel = new JLabel(" ");
-        numExamplesLabel.setName(NUM_EXAMPLES_LABEL);
+        numExamplesLabel.setName(Resources.NUM_EXAMPLES_LABEL);
         examplesTabPanel.add(numExamplesLabel, "cell 0 2,alignx right,aligny bottom");
     }
 
     private void initExamplesTable() {
         examplesTable = new JTable();
-        examplesTable.setName(EXAMPLES_TABLE);
+        examplesTable.setName(Resources.EXAMPLES_TABLE);
         disableTable(examplesTable);
         examplesScrollPane.setViewportView(examplesTable);
     }
 
     private void initParameterValuesPanel() {
         parameterValuesPanel = new JPanel();
-        parameterValuesPanel.setName(PARAMETER_VALUES_PANEL);
+        parameterValuesPanel.setName(Resources.PARAMETER_VALUES_PANEL);
         parameterValuesPanel.setBorder(new TitledBorder(null, "Parameter Values", TitledBorder.LEADING,
                 TitledBorder.TOP, null, null));
         stepsTabPanel.add(parameterValuesPanel, "cell 1 1,grow");
@@ -489,13 +321,13 @@ public class Screen implements IScreen {
 
     private void initParameterValuesScrollPane() {
         parameterValuesScrollPane = new JScrollPane();
-        parameterValuesScrollPane.setName(PARAMETER_VALUES_SCROLL_PANE);
+        parameterValuesScrollPane.setName(Resources.PARAMETER_VALUES_SCROLL_PANE);
         parameterValuesPanel.add(parameterValuesScrollPane, "cell 0 0,grow");
     }
 
     private void initParameterValuesList() {
         parameterValuesList = new JList();
-        parameterValuesList.setName(PARAMETER_VALUES_LIST);
+        parameterValuesList.setName(Resources.PARAMETER_VALUES_LIST);
         disableList(parameterValuesList);
         editListAction = new ParamValuesEditListAction();
         new ListAction(parameterValuesList, editListAction);
@@ -509,7 +341,7 @@ public class Screen implements IScreen {
 
     private void initAddParamValueButton() {
         addParamValueButton = new JButton("Add");
-        addParamValueButton.setName(ADD_PARAM_VALUE_BUTTON);
+        addParamValueButton.setName(Resources.ADD_PARAM_VALUE_BUTTON);
         addParamValueButton.setEnabled(false);
         parameterValuesPanel.add(addParamValueButton, "flowx,cell 0 1,alignx right,aligny bottom");
         addParamValueButton.addActionListener(new ActionListener() {
@@ -521,7 +353,7 @@ public class Screen implements IScreen {
 
     private void initRemoveParamValueButton() {
         removeParamValueButton = new JButton("Remove");
-        removeParamValueButton.setName(REMOVE_PARAM_VALUE_BUTTON);
+        removeParamValueButton.setName(Resources.REMOVE_PARAM_VALUE_BUTTON);
         removeParamValueButton.setEnabled(false);
         parameterValuesPanel.add(removeParamValueButton, "cell 0 1,alignx right,aligny bottom");
         removeParamValueButton.addActionListener(new ActionListener() {
@@ -533,20 +365,20 @@ public class Screen implements IScreen {
 
     private void initExamplesTabPanel() {
         examplesTabPanel = new JPanel();
-        examplesTabPanel.setName(EXAMPLES_TAB_PANEL);
-        scenarioTabs.addTab(EXAMPLES_TAB_TITLE, null, examplesTabPanel, null);
+        examplesTabPanel.setName(Resources.EXAMPLES_TAB_PANEL);
+        scenarioTabs.addTab(Resources.EXAMPLES_TAB_TITLE, null, examplesTabPanel, null);
         examplesTabPanel.setLayout(new MigLayout("", "[][grow]", "[][grow][]"));
     }
 
     private void initExamplesScrollPane() {
         examplesScrollPane = new JScrollPane();
-        examplesScrollPane.setName(EXAMPLES_SCROLL_PANE);
+        examplesScrollPane.setName(Resources.EXAMPLES_SCROLL_PANE);
         examplesTabPanel.add(examplesScrollPane, "cell 0 1 2 1,grow");
     }
 
     private void initGenerateExamplesButton() {
         generateExamplesButton = new JButton("Generate examples");
-        generateExamplesButton.setName(GENERATE_EXAMPLES_BUTTON);
+        generateExamplesButton.setName(Resources.GENERATE_EXAMPLES_BUTTON);
         generateExamplesButton.setEnabled(false);
         examplesTabPanel.add(generateExamplesButton, "cell 0 0 2 1");
         generateExamplesButton.addActionListener(new ActionListener() {
@@ -562,7 +394,7 @@ public class Screen implements IScreen {
 
     private void initParametersList() {
         parametersList = new JList();
-        parametersList.setName(PARAMETERS_LIST);
+        parametersList.setName(Resources.PARAMETERS_LIST);
         disableList(parametersList);
         parametersScrollPane.setViewportView(parametersList);
         parametersList.addListSelectionListener(new ListSelectionListener() {
@@ -574,13 +406,13 @@ public class Screen implements IScreen {
 
     private void initParametersScrollPane() {
         parametersScrollPane = new JScrollPane();
-        parametersScrollPane.setName(PARAMETERS_SCROLL_PANE);
+        parametersScrollPane.setName(Resources.PARAMETERS_SCROLL_PANE);
         parametersPanel.add(parametersScrollPane, "cell 0 0,grow");
     }
 
     private void initParametersPanel() {
         parametersPanel = new JPanel();
-        parametersPanel.setName(PARAMETERS_PANEL);
+        parametersPanel.setName(Resources.PARAMETERS_PANEL);
         parametersPanel.setBorder(new TitledBorder(null, "Parameters", TitledBorder.LEADING, TitledBorder.TOP, null,
                 null));
         stepsTabPanel.add(parametersPanel, "cell 1 0,grow");
@@ -589,7 +421,7 @@ public class Screen implements IScreen {
 
     public JTextPane newStepsTextPane() {
         JTextPane textPane = new JTextPane();
-        textPane.setName(TEXT_PANE);
+        textPane.setName(Resources.TEXT_PANE);
         textPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         textPane.getStyledDocument().addDocumentListener(new DocumentListener() {
             public void removeUpdate(DocumentEvent evt) {
@@ -616,26 +448,26 @@ public class Screen implements IScreen {
 
     private void initStepsScrollPane() {
         stepsScrollPane = new JScrollPane();
-        stepsScrollPane.setName(STEPS_SCROLL_PANE);
+        stepsScrollPane.setName(Resources.STEPS_SCROLL_PANE);
         stepsTabPanel.add(stepsScrollPane, "cell 0 0 1 2,grow");
     }
 
     private void initStepsTabPanel() {
         stepsTabPanel = new JPanel();
-        stepsTabPanel.setName(STEPS_TAB_PANEL);
-        scenarioTabs.addTab(STEPS_TAB_TITLE, null, stepsTabPanel, null);
+        stepsTabPanel.setName(Resources.STEPS_TAB_PANEL);
+        scenarioTabs.addTab(Resources.STEPS_TAB_TITLE, null, stepsTabPanel, null);
         stepsTabPanel.setLayout(new MigLayout("", "[360.00,grow][300px:300px:300px,right]", "[grow][grow]"));
     }
 
     private void initScenarioTabs() {
         scenarioTabs = new JTabbedPane(JTabbedPane.TOP);
-        scenarioTabs.setName(SCENARIO_TABS);
+        scenarioTabs.setName(Resources.SCENARIO_TABS);
         scenariosTabPanel.add(scenarioTabs, "cell 0 1 5 1,grow");
     }
 
     private void initAddScenarioButton() {
         addScenarioButton = new JButton("Add");
-        addScenarioButton.setName(ADD_SCENARIO_BUTTON);
+        addScenarioButton.setName(Resources.ADD_SCENARIO_BUTTON);
         addScenarioButton.setEnabled(false);
         scenariosTabPanel.add(addScenarioButton, "cell 2 0");
         addScenarioButton.addActionListener(new ActionListener() {
@@ -647,7 +479,7 @@ public class Screen implements IScreen {
 
     private void initEditScenarioButton() {
         editScenarioButton = new JButton("Edit");
-        editScenarioButton.setName(EDIT_SCENARIO_BUTTON);
+        editScenarioButton.setName(Resources.EDIT_SCENARIO_BUTTON);
         editScenarioButton.setEnabled(false);
         scenariosTabPanel.add(editScenarioButton, "cell 3 0");
         editScenarioButton.addActionListener(new ActionListener() {
@@ -659,7 +491,7 @@ public class Screen implements IScreen {
     
     private void initDeleteScenarioButton() {
         deleteScenarioButton = new JButton("Delete");
-        deleteScenarioButton.setName(DELETE_SCENARIO_BUTTON);
+        deleteScenarioButton.setName(Resources.DELETE_SCENARIO_BUTTON);
         deleteScenarioButton.setEnabled(false);
         scenariosTabPanel.add(deleteScenarioButton, "cell 4 0");
         deleteScenarioButton.addActionListener(new ActionListener() {
@@ -671,7 +503,7 @@ public class Screen implements IScreen {
     
     private void initScenarioComboBox() {
         scenarioComboBox = new JComboBox();
-        scenarioComboBox.setName(SCENARIO_COMBO_BOX);
+        scenarioComboBox.setName(Resources.SCENARIO_COMBO_BOX);
         scenarioComboBox.setEnabled(false);
         scenariosTabPanel.add(scenarioComboBox, "cell 1 0,growx");
         scenarioComboBox.addActionListener(new ActionListener() {
@@ -683,7 +515,7 @@ public class Screen implements IScreen {
 
     private void initScenarioLabel() {
         scenarioLabel = new JLabel("Scenario:");
-        scenarioLabel.setName(SCENARIO_LABEL);
+        scenarioLabel.setName(Resources.SCENARIO_LABEL);
         scenariosTabPanel.add(scenarioLabel, "cell 0 0,alignx left");
     }
     
@@ -697,43 +529,24 @@ public class Screen implements IScreen {
 
     private JPanel initScenariosTabPanel() {
         scenariosTabPanel = new JPanel();
-        scenariosTabPanel.setName(SCENARIOS_TAB_PANEL);
-        mainTabs.addTab(SCENARIOS_TAB_TITLE, null, scenariosTabPanel, null);
+        scenariosTabPanel.setName(Resources.SCENARIOS_TAB_PANEL);
+        mainTabs.addTab(Resources.SCENARIOS_TAB_TITLE, null, scenariosTabPanel, null);
         scenariosTabPanel.setLayout(new MigLayout("", "[][grow][]", "[][grow]"));
         return scenariosTabPanel;
     }
 
     private JTabbedPane initMainTabs() {
         mainTabs = new JTabbedPane(JTabbedPane.TOP);
-        mainTabs.setName(MAIN_TABS);
+        mainTabs.setName(Resources.MAIN_TABS);
         mainPanel.add(mainTabs, "cell 0 0,grow");
         return mainTabs;
     }
 
     private JPanel initMainPanel() {
         mainPanel = new JPanel();
-        mainPanel.setName(MAIN_PANEL);
-        mainFrame.getContentPane().add(mainPanel, "cell 0 0,grow");
+        mainPanel.setName(Resources.MAIN_PANEL);
         mainPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
         return mainPanel;
-    }
-
-    private void initMainFrame() {
-        mainFrame = new JFrame();
-        mainFrame.setPreferredSize(new Dimension(859, 582));
-        mainFrame.setMinimumSize(new Dimension(859, 582));
-        mainFrame.setTitle(TITLE);
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("logo.png"));
-        } catch (IOException e) {
-            ExceptionFileWriter.writeException(e);
-        }
-        mainFrame.setIconImage(image);
-        mainFrame.setName(MAIN_FRAME);
-        mainFrame.setBounds(100, 100, 859, 582);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.getContentPane().setLayout(new MigLayout("", "[grow]", "[grow]"));
     }
 
     private void stepsTextEdited() {
@@ -745,7 +558,7 @@ public class Screen implements IScreen {
     private void addParamValue() {
         String selectedParam = (String) parametersList.getSelectedValue();
         if (selectedParam != null) {
-            String value = JOptionPane.showInputDialog(mainFrame, "Enter value:");
+            String value = JOptionPane.showInputDialog(mainPanel, "Enter value:");
             if (value != null && value.trim().length() != 0) {
                 storyModel.getSelectedScenario().addParamValue(selectedParam, value);
             }
@@ -773,7 +586,7 @@ public class Screen implements IScreen {
     private void generateExamples() {
         int numExamples = storyModel.getSelectedScenario().numExamples();
         if (numExamples > 50) {
-            int response = JOptionPane.showConfirmDialog(mainFrame, "There are " + 
+            int response = JOptionPane.showConfirmDialog(mainPanel, "There are " + 
                     numExamples + " examples. Do you wish to continue?");
             if (response != JOptionPane.YES_OPTION) {
                 return;
@@ -815,7 +628,7 @@ public class Screen implements IScreen {
     }
     
     private void addNewScenario() {
-        String description = JOptionPane.showInputDialog(mainFrame, "Description: ");
+        String description = JOptionPane.showInputDialog(mainPanel, "Description: ");
         if (description == null || description.trim().length() == 0) {
             return;
         }
@@ -826,13 +639,13 @@ public class Screen implements IScreen {
     }
     
     private void editScenario() {
-        String description = JOptionPane.showInputDialog(mainFrame, "Description: ", 
+        String description = JOptionPane.showInputDialog(mainPanel, "Description: ", 
                 storyModel.getSelectedScenario().getDescription());
         if (description == null || description.trim().length() == 0) {
             return;
         }
         if (storyModel.hasScenarioWithDescription(description)) {
-            JOptionPane.showMessageDialog(mainFrame, 
+            JOptionPane.showMessageDialog(mainPanel, 
                     "Scenario with that description already exists.", 
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -842,7 +655,7 @@ public class Screen implements IScreen {
     }
     
     private void deleteScenario() {
-        int response = JOptionPane.showConfirmDialog(mainFrame, 
+        int response = JOptionPane.showConfirmDialog(mainPanel, 
                 "Deleting the selected scenario is irreversible. Do you wish to continue?", 
                 "Deleting Scenario",  JOptionPane.WARNING_MESSAGE);
         if (response != JOptionPane.YES_OPTION) {
@@ -871,7 +684,7 @@ public class Screen implements IScreen {
         }
     }
     
-    private void newStory() {
+    public void newStory() {
         if (!replaceCurrentStory()) {
             return;
         }
@@ -879,12 +692,12 @@ public class Screen implements IScreen {
         setOpenedStoryFile(null);
     }
     
-    private void openExistingStory() {
+    public void openExistingStory() {
         if (!replaceCurrentStory()) {
             return;
         }
         JFileChooser fc = new JFileChooser();
-        int returnVal = fc.showOpenDialog(mainFrame);
+        int returnVal = fc.showOpenDialog(mainPanel);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             setOpenedStoryFile(fc.getSelectedFile());
             importStory(openedStoryFile);
@@ -893,7 +706,7 @@ public class Screen implements IScreen {
     
     private boolean replaceCurrentStory() {
         if (storyModel != null) {
-            int result = JOptionPane.showConfirmDialog(mainFrame, 
+            int result = JOptionPane.showConfirmDialog(mainPanel, 
                     "All scenarios in the current story will be removed", 
                     "Warning", JOptionPane.WARNING_MESSAGE);
             if (result == JOptionPane.CANCEL_OPTION || result == JOptionPane.CLOSED_OPTION) {
@@ -903,10 +716,10 @@ public class Screen implements IScreen {
         return true;
     }
     
-    private void saveStory() {
+    public void saveStory() {
         if (openedStoryFile == null) {
             JFileChooser chooser = new JFileChooser();
-            chooser.showSaveDialog(mainFrame);
+            chooser.showSaveDialog(mainPanel);
             setOpenedStoryFile(chooser.getSelectedFile());
         }
         if (openedStoryFile != null) {
@@ -914,7 +727,7 @@ public class Screen implements IScreen {
                 new StoryExporter().exportToFile(openedStoryFile, storyModel);
             } catch (Exception e) {
                 ExceptionFileWriter.writeException(e);
-                JOptionPane.showMessageDialog(mainFrame, "There was an error saving.", 
+                JOptionPane.showMessageDialog(mainPanel, "There was an error saving.", 
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -922,7 +735,7 @@ public class Screen implements IScreen {
     
     private void setOpenedStoryFile(File file) {
         openedStoryFile = file;
-        mainFrame.setTitle(file != null ? TITLE + " - " + file.getAbsolutePath() : TITLE);
+        screenContext.setTitle(file != null ? Resources.TITLE + " - " + file.getAbsolutePath() : Resources.TITLE);
     }
     
     private void prepareUIForNewStory() {
@@ -931,11 +744,11 @@ public class Screen implements IScreen {
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
         enableControls(false);
-        enableOrDisableSavedMenuItem();
+        enableOrDisableSaving();
     }
     
-    private void enableOrDisableSavedMenuItem() {
-        saveMenuItem.setEnabled(storyModel != null && !hasExistingStoryFile());
+    private void enableOrDisableSaving() {
+        screenContext.enableSaving(storyModel != null && !hasExistingStoryFile());
     }
     
     private void prepareUIForExistingStory() {
@@ -943,7 +756,7 @@ public class Screen implements IScreen {
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
         enableControls(true);
-        enableOrDisableSavedMenuItem();
+        enableOrDisableSaving();
         scenarioChanged();
     }
     
@@ -999,7 +812,7 @@ public class Screen implements IScreen {
         removeExampleButton.setEnabled(enabled);
     }
     
-    private boolean hasExistingStoryFile() {
+    public boolean hasExistingStoryFile() {
         return existingStoryFile != null;
     }
 }
