@@ -12,8 +12,8 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
 import org.bigtesting.jbehave.buddy.core.ui.EditorStyle;
+import org.bigtesting.jbehave.buddy.core.ui.ScreenContext;
 import org.bigtesting.jbehave.buddy.core.ui.StepsDocument;
-import org.bigtesting.jbehave.buddy.core.util.ExceptionFileWriter;
 
 public class SwingStepsDocument implements StepsDocument {
 
@@ -38,9 +38,11 @@ public class SwingStepsDocument implements StepsDocument {
     }
 
     private final StyledDocument doc;
+    private final ScreenContext screenContext;
 
-    public SwingStepsDocument(StyledDocument doc) {
+    public SwingStepsDocument(StyledDocument doc, ScreenContext screenContext) {
         this.doc = doc;
+        this.screenContext = screenContext;
     }
 
     public void addStylesToDocument() {
@@ -80,7 +82,7 @@ public class SwingStepsDocument implements StepsDocument {
         try {
             return doc.getText(0, doc.getLength());
         } catch (BadLocationException e) {
-            ExceptionFileWriter.writeException(e);
+            screenContext.logException(e);
         }
         return null;
     }
@@ -93,7 +95,7 @@ public class SwingStepsDocument implements StepsDocument {
         try {
             doc.insertString(0, text, null);
         } catch (BadLocationException e) {
-            ExceptionFileWriter.writeException(e);
+            screenContext.logException(e);
         }
     }
 }

@@ -7,4 +7,8 @@ public interface ScreenContext {
     void setTitle(String title);
     
     void enableSaving(boolean enable);
+
+    boolean isDialog();
+
+    void logException(Throwable e);
 }

@@ -31,7 +31,8 @@ public class ScenarioModel {
         this.description = description;
         params = new ScenarioParameters();
         stepsTextPane = screen.newStepsTextPane();
-        stepsModel = new StepsEditorModel(new SwingStepsDocument(stepsTextPane.getStyledDocument()));
+        ScreenContext ctx = screen.getScreenContext();
+        stepsModel = new StepsEditorModel(new SwingStepsDocument(stepsTextPane.getStyledDocument(), ctx), ctx);
         stepsModel.addParametersListener(params);
         examplesGenerator = new ExamplesGenerator(params);
         paramValuesListModel = new ParameterValuesListModel(params);

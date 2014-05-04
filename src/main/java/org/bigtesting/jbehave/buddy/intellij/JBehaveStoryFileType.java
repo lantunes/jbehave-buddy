@@ -1,5 +1,6 @@
 package org.bigtesting.jbehave.buddy.intellij;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +32,6 @@ public class JBehaveStoryFileType extends LanguageFileType {
 
     @Nullable
     public Icon getIcon() {
-        return null;
+        return AllIcons.FileTypes.Any_type;
     }
 }

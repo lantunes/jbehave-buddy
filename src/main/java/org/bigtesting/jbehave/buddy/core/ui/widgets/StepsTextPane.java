@@ -31,7 +31,7 @@ import javax.swing.text.JTextComponent;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.Utilities;
 
-import org.bigtesting.jbehave.buddy.core.util.ExceptionFileWriter;
+import org.bigtesting.jbehave.buddy.core.ui.ScreenContext;
 
 /**
  * Derived from
@@ -60,6 +60,8 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
 
     // Text component this TextTextLineNumber component is in sync with
     private JTextComponent component;
+
+    private final ScreenContext screenContext;
 
     /*
      * Indicates whether this Font should be updated automatically when the Font
@@ -95,8 +97,8 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
      * @param component
      *            the related text component
      */
-    public StepsTextPane(JTextComponent component) {
-        this(component, 3);
+    public StepsTextPane(JTextComponent component, ScreenContext screenContext) {
+        this(component, 3, screenContext);
     }
 
     /**
@@ -108,9 +110,9 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
      *            the number of digits used to calculate the minimum width of
      *            the component
      */
-    public StepsTextPane(JTextComponent component, int minimumDisplayDigits) {
+    public StepsTextPane(JTextComponent component, int minimumDisplayDigits, ScreenContext screenContext) {
         this.component = component;
-
+        this.screenContext = screenContext;
         setFont(component.getFont());
 
         setBorderGap(5);
@@ -173,9 +175,6 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
      * <li>TextLineNumber.CENTER
      * <li>TextLineNumber.RIGHT (default)
      * </ul>
-     * 
-     * @param currentLineForeground
-     *            the Color used to render the current line
      */
     private void setDigitAlignment(float digitAlignment) {
         this.digitAlignment = digitAlignment > 1.0f ? 1.0f : digitAlignment < 0.0f ? -1.0f : digitAlignment;
@@ -266,7 +265,7 @@ public class StepsTextPane extends JPanel implements CaretListener, DocumentList
                 rowStartOffset = Utilities.getRowEnd(component, rowStartOffset) + 1;
 
             } catch (Exception e) {
-                ExceptionFileWriter.writeException(e);
+                screenContext.logException(e);
             }
         }
     }

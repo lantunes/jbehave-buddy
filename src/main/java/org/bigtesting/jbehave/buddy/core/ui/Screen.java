@@ -1,13 +1,12 @@
 package org.bigtesting.jbehave.buddy.core.ui;
 
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -34,10 +33,10 @@ import javax.swing.table.DefaultTableModel;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.commons.io.FileUtils;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ListAction;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ParamValuesEditListAction;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.StepsTextPane;
-import org.bigtesting.jbehave.buddy.core.util.ExceptionFileWriter;
 import org.bigtesting.jbehave.buddy.core.util.Resources;
 
 public class Screen implements IScreen {
@@ -185,35 +184,45 @@ public class Screen implements IScreen {
     }
     
     private void initOKButton() {
+        if (!screenContext.isDialog()) return;
         okButton = new JButton("OK");
         okButton.setName(Resources.OK_BUTTON);
         okButton.setEnabled(true);
         mainPanel.add(okButton, "flowx,cell 0 1,alignx right,aligny bottom");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                new StoryExporter().export(storyModel);
-                screenContext.close();
+                ok();
             }
         });
     }
+
+    public void ok() {
+        new StoryExporter().export(storyModel);
+        screenContext.close();
+    }
     
     private void initCancelButton() {
+        if (!screenContext.isDialog()) return;
         cancelButton = new JButton("Cancel");
         cancelButton.setName(Resources.CANCEL_BUTTON);
         cancelButton.setEnabled(true);
         mainPanel.add(cancelButton, "cell 0 1,alignx right,aligny bottom");
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
-                screenContext.close();
+                cancel();
             }
         });
+    }
+
+    public void cancel() {
+        screenContext.close();
     }
 
     private void importStory(File storyFile) {
         try {
             storyModel = new StoryImporter().importStory(storyFile, this);
         } catch (Exception e) {
-            ExceptionFileWriter.writeException(e);
+            screenContext.logException(e);
             JOptionPane.showMessageDialog(mainPanel, "there was an error parsing the story file: " + e.getMessage());
         }
         
@@ -423,6 +432,7 @@ public class Screen implements IScreen {
         JTextPane textPane = new JTextPane();
         textPane.setName(Resources.TEXT_PANE);
         textPane.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+        textPane.setBackground(Color.WHITE);
         textPane.getStyledDocument().addDocumentListener(new DocumentListener() {
             public void removeUpdate(DocumentEvent evt) {
                 EventQueue.invokeLater(new Runnable() {
@@ -679,7 +689,7 @@ public class Screen implements IScreen {
             updateExamplesTableExamplesCount();
             JTextPane textPane = selectedScenario.getStepsTextPane();
             stepsScrollPane.setViewportView(textPane);
-            stepsScrollPane.setRowHeaderView(new StepsTextPane(textPane));
+            stepsScrollPane.setRowHeaderView(new StepsTextPane(textPane, screenContext));
             selectedScenario.clearParameterValues();
         }
     }
@@ -723,16 +733,46 @@ public class Screen implements IScreen {
             setOpenedStoryFile(chooser.getSelectedFile());
         }
         if (openedStoryFile != null) {
-            try {
-                new StoryExporter().exportToFile(openedStoryFile, storyModel);
-            } catch (Exception e) {
-                ExceptionFileWriter.writeException(e);
-                JOptionPane.showMessageDialog(mainPanel, "There was an error saving.", 
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            exportStoryModelToFile(openedStoryFile);
         }
     }
-    
+
+    public void saveExistingStoryFile() {
+        if (existingStoryFile != null) {
+            exportStoryModelToFile(existingStoryFile);
+        }
+    }
+
+    public boolean isExistingStoryChanged() {
+        if (existingStoryFile != null) {
+            if (!existingStoryFile.exists()) {
+                throw new RuntimeException("The existing story file " + existingStoryFile + " does not exist");
+            }
+            try {
+                String existingStory = FileUtils.readFileToString(existingStoryFile);
+                existingStory = stripLineFeeds(existingStory);
+                String currentStory = storyModel.print();
+                currentStory = stripLineFeeds(currentStory);
+                return !currentStory.equals(existingStory);
+            } catch (IOException e) { }
+        }
+        return false;
+    }
+
+    private String stripLineFeeds(String content) {
+        return content.replaceAll("\\r", "").replaceAll("\\n", "");
+    }
+
+    private void exportStoryModelToFile(File file) {
+        try {
+            new StoryExporter().exportToFile(file, storyModel);
+        } catch (Exception e) {
+            screenContext.logException(e);
+            JOptionPane.showMessageDialog(mainPanel, "There was an error saving.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void setOpenedStoryFile(File file) {
         openedStoryFile = file;
         screenContext.setTitle(file != null ? Resources.TITLE + " - " + file.getAbsolutePath() : Resources.TITLE);
@@ -814,5 +854,9 @@ public class Screen implements IScreen {
     
     public boolean hasExistingStoryFile() {
         return existingStoryFile != null;
+    }
+
+    public ScreenContext getScreenContext() {
+        return screenContext;
     }
 }

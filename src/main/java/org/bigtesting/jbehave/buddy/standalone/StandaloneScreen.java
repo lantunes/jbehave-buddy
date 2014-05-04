@@ -48,7 +48,7 @@ public class StandaloneScreen implements ScreenContext {
         try {
             image = ImageIO.read(this.getClass().getClassLoader().getResourceAsStream("logo.png"));
         } catch (IOException e) {
-            ExceptionFileWriter.writeException(e);
+            logException(e);
         }
         mainFrame.setIconImage(image);
         mainFrame.setName(Resources.MAIN_FRAME);
@@ -177,5 +177,11 @@ public class StandaloneScreen implements ScreenContext {
 
     public void enableSaving(boolean enable) {
         saveMenuItem.setEnabled(enable);
+    }
+
+    public boolean isDialog() { return true; }
+
+    public void logException(Throwable e) {
+        ExceptionFileWriter.writeException(e);
     }
 }

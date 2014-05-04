@@ -3,6 +3,7 @@ package org.bigtesting.jbehave.buddy.tests.ui.editor;
 import static org.fest.assertions.Assertions.assertThat;
 
 import org.bigtesting.jbehave.buddy.core.ui.EditorStyle;
+import org.bigtesting.jbehave.buddy.core.ui.ScreenContext;
 import org.bigtesting.jbehave.buddy.core.ui.editor.StepsEditorModel;
 import org.bigtesting.jbehave.buddy.tests.ui.editor.TestableStepsDocument.HighlightedItem;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class TestStepsEditorModel {
         TestableStepsDocument doc = new TestableStepsDocument();
         doc.setText(text);
 
-        StepsEditorModel model = new StepsEditorModel(doc);
+        StepsEditorModel model = new StepsEditorModel(doc, new FakeScreenContext());
         model.handleTextEdit();
 
         HighlightedItem[] items = doc.getHighlightedItems();
@@ -55,7 +56,7 @@ public class TestStepsEditorModel {
 
         TestableParametersListener listener = new TestableParametersListener();
         TestableStepsDocument doc = new TestableStepsDocument();
-        StepsEditorModel model = new StepsEditorModel(doc);
+        StepsEditorModel model = new StepsEditorModel(doc, new FakeScreenContext());
         model.addParametersListener(listener);
 
         doc.setText("Given a <test");
@@ -106,5 +107,25 @@ public class TestStepsEditorModel {
         doc.setText("Given a <te");
         model.handleTextEdit();
         assertThat(listener.getParameters()).isEmpty();
+    }
+
+    private static class FakeScreenContext implements ScreenContext {
+
+        public void close() {
+        }
+
+        public void setTitle(String title) {
+        }
+
+        public void enableSaving(boolean enable) {
+        }
+
+        public boolean isDialog() {
+            return false;
+        }
+
+        public void logException(Throwable e) {
+            e.printStackTrace();
+        }
     }
 }

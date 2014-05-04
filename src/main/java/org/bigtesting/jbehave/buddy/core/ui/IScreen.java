@@ -8,4 +8,6 @@ public interface IScreen {
     void examplesTableChanged(TableModelEvent e);
     
     JTextPane newStepsTextPane();
+
+    ScreenContext getScreenContext();
 }

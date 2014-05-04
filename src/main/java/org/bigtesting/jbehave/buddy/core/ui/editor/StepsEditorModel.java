@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bigtesting.jbehave.buddy.core.ui.EditorStyle;
+import org.bigtesting.jbehave.buddy.core.ui.ScreenContext;
 import org.bigtesting.jbehave.buddy.core.ui.StepsDocument;
-import org.bigtesting.jbehave.buddy.core.util.ExceptionFileWriter;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -25,11 +25,14 @@ public class StepsEditorModel {
 
     private final List<ParametersListener> parametersListeners = new ArrayList<ParametersListener>();
 
-    public StepsEditorModel(StepsDocument doc) {
+    private final ScreenContext screenContext;
+
+    public StepsEditorModel(StepsDocument doc, ScreenContext screenContext) {
         this.doc = doc;
         this.doc.addStylesToDocument();
         // TODO the value between the angle brackets must be a valid variable name (e.g. not an empty string, etc.)
         paramPattern = Pattern.compile("(<).*?(>)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        this.screenContext = screenContext;
     }
 
     public void addParametersListener(ParametersListener listener) {
@@ -53,7 +56,7 @@ public class StepsEditorModel {
             performSemanticAnalysis(text);
 
         } catch (Exception e) {
-            ExceptionFileWriter.writeException(e);
+            screenContext.logException(e);
         }
     }
     
