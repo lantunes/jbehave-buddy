@@ -82,6 +82,8 @@ public class Screen implements IScreen {
      * a story file that comes in through the constructor 
      */
     private File existingStoryFile;
+
+    private String existingStoryInitialContent;
     
     /*
      * a story file that is opened in the application 
@@ -180,6 +182,7 @@ public class Screen implements IScreen {
         initOKButton();
         initCancelButton();
         importStory(existingStoryFile);
+        existingStoryInitialContent = storyModel.print();
         screenContext.setTitle(Resources.TITLE + " - " + existingStoryFile.getName());
     }
     
@@ -748,19 +751,10 @@ public class Screen implements IScreen {
             if (!existingStoryFile.exists()) {
                 throw new RuntimeException("The existing story file " + existingStoryFile + " does not exist");
             }
-            try {
-                String existingStory = FileUtils.readFileToString(existingStoryFile);
-                existingStory = stripLineFeeds(existingStory);
-                String currentStory = storyModel.print();
-                currentStory = stripLineFeeds(currentStory);
-                return !currentStory.equals(existingStory);
-            } catch (IOException e) { }
+            String currentStory = storyModel.print();
+            return !currentStory.equals(existingStoryInitialContent);
         }
         return false;
-    }
-
-    private String stripLineFeeds(String content) {
-        return content.replaceAll("\\r", "").replaceAll("\\n", "");
     }
 
     private void exportStoryModelToFile(File file) {

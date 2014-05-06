@@ -7,6 +7,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import org.apache.commons.lang.StringUtils;
 import org.bigtesting.jbehave.buddy.core.ui.editor.StepsEditorModel;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ExamplesTableModel;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ParameterValuesListModel;
@@ -137,6 +138,7 @@ public class ScenarioModel {
     }
     
     public String toString() {
-        return getDescription();
+        String description = getDescription().replaceAll("\\r", "").replaceAll("\\n", "").trim();
+        return StringUtils.abbreviate(description, 95);
     }
 }

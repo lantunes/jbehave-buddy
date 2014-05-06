@@ -13,6 +13,11 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.vcs.AbstractVcs;
+import com.intellij.openapi.vcs.FilePath;
+import com.intellij.openapi.vcs.ObjectsConvertor;
+import com.intellij.openapi.vcs.ProjectLevelVcsManager;
+import com.intellij.openapi.vfs.ReadonlyStatusHandler;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.bigtesting.jbehave.buddy.core.ui.Screen;
@@ -23,6 +28,7 @@ import com.intellij.openapi.diagnostic.Logger;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 public class JBehaveStoryEditor implements FileEditor {
 
@@ -95,6 +101,20 @@ public class JBehaveStoryEditor implements FileEditor {
 
     public void save() {
         if (screen.isExistingStoryChanged()) {
+
+            if (!virtualFile.isWritable()) {
+                //it may be under version control
+                ReadonlyStatusHandler.ensureFilesWritable(project, virtualFile);
+            }
+
+            if (!virtualFile.isWritable()) {
+                //the file may not have been checked out
+                JOptionPane.showMessageDialog(screen.getMainPanel(),
+                        "The story file is not writable. Any changes made will not be saved.",
+                        "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             screen.saveExistingStoryFile();
         }
     }
