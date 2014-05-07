@@ -17,7 +17,8 @@ import org.bigtesting.jbehave.buddy.core.util.ExamplesFormatter;
 public class ScenarioModel {
 
     private String description;
-    
+    private String meta;
+
     private ScenarioParameters params;
     private ExamplesGenerator examplesGenerator;
     
@@ -136,7 +137,15 @@ public class ScenarioModel {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
+    public void setMeta(String meta) {
+        this.meta = meta;
+    }
+
+    public String getMeta() {
+        return meta == null ? "" : meta;
+    }
+
     public String toString() {
         String description = getDescription().replaceAll("\\r", "").replaceAll("\\n", "").trim();
         return StringUtils.abbreviate(description, 95);

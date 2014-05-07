@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -23,6 +25,7 @@ public class StoryImporter {
         String storyContents = readFile(storyFile);
         if (storyContents != null && storyContents.trim().length() > 0) {
             Story story = parser.parseStory(storyContents);
+            storyModel.setMeta(asString(story.getMeta()));
             addScenarios(screen, storyModel, story);
         }
         return storyModel;
@@ -32,6 +35,7 @@ public class StoryImporter {
         
         for (Scenario scenario : story.getScenarios()) {
             ScenarioModel scenarioModel = new ScenarioModel(scenario.getTitle(), screen);
+            scenarioModel.setMeta(asString(scenario.getMeta()));
             addSteps(scenario, scenarioModel);
             addExamplesAndParamValues(scenario, scenarioModel);
             storyModel.addExistingScenario(scenarioModel);
@@ -86,5 +90,17 @@ public class StoryImporter {
         }
 
         return stringBuilder.toString();
+    }
+
+    private String asString(Meta meta) {
+        if (meta == null) return "";
+        Keywords keywords = new Keywords();
+        StringBuilder sb = new StringBuilder();
+        for (Iterator<String> itr = meta.getPropertyNames().iterator(); itr.hasNext();) {
+            String name = itr.next();
+            sb.append(keywords.metaProperty()).append(name).append(" ").append(meta.getProperty(name));
+            if (itr.hasNext()) sb.append(" ");
+        }
+        return sb.toString();
     }
 }

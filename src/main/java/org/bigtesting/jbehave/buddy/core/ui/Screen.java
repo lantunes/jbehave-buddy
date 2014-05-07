@@ -8,21 +8,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -75,7 +61,9 @@ public class Screen implements IScreen {
     private JButton editScenarioButton;
     private JButton deleteScenarioButton;
     private ParamValuesEditListAction editListAction;
-    
+    private JTextField storyMetaTextField;
+    private JTextField scenarioMetaTextField;
+
     private StoryModel storyModel;
     
     /*
@@ -134,6 +122,27 @@ public class Screen implements IScreen {
         initAddScenarioButton();
         initEditScenarioButton();
         initDeleteScenarioButton();
+        initScenarioMetaControls();
+    }
+
+    private void initScenarioMetaControls() {
+        JLabel scenarioMetaLabel = new JLabel("Meta:");
+        scenarioMetaTextField = new JTextField();
+        scenarioMetaTextField.setEnabled(false);
+        scenarioMetaTextField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { setScenarioMetaOnScenarioModel(); }
+            public void removeUpdate(DocumentEvent e) { setScenarioMetaOnScenarioModel(); }
+            public void changedUpdate(DocumentEvent e) { setScenarioMetaOnScenarioModel(); }
+        });
+        JPanel scenarioMetaPanel = new JPanel();
+        scenarioMetaPanel.setLayout(new MigLayout("", "[][grow]", "[]"));
+        scenarioMetaPanel.add(scenarioMetaLabel, "cell 0 0,alignx left");
+        scenarioMetaPanel.add(scenarioMetaTextField, "cell 1 0,alignx left, aligny top, growx");
+        scenariosTabPanel.add(scenarioMetaPanel, "cell 0 1 5 1, aligny top, grow");
+    }
+
+    private void setScenarioMetaOnScenarioModel() {
+        storyModel.getSelectedScenario().setMeta(scenarioMetaTextField.getText());
     }
 
     private void createStepsEditorControls() {
@@ -175,7 +184,28 @@ public class Screen implements IScreen {
 
     private void initMainControls() {
         initMainPanel();
+        initStoryMetaControls();
         initMainTabs();
+    }
+
+    private void initStoryMetaControls() {
+        JLabel storyMetaLabel = new JLabel("Story Meta:");
+        storyMetaTextField = new JTextField();
+        storyMetaTextField.setEnabled(false);
+        storyMetaTextField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { setStoryMetaOnStoryModel(); }
+            public void removeUpdate(DocumentEvent e) { setStoryMetaOnStoryModel(); }
+            public void changedUpdate(DocumentEvent e) { setStoryMetaOnStoryModel(); }
+        });
+        JPanel storyMetaPanel = new JPanel();
+        storyMetaPanel.setLayout(new MigLayout("", "[][grow]", "[]"));
+        storyMetaPanel.add(storyMetaLabel, "cell 0 0,alignx left");
+        storyMetaPanel.add(storyMetaTextField, "cell 1 0,alignx left, aligny top, growx");
+        mainPanel.add(storyMetaPanel, "cell 0 0, aligny top, grow");
+    }
+
+    private void setStoryMetaOnStoryModel() {
+        storyModel.setMeta(storyMetaTextField.getText());
     }
 
     private void initExistingStory() {
@@ -475,7 +505,7 @@ public class Screen implements IScreen {
     private void initScenarioTabs() {
         scenarioTabs = new JTabbedPane(JTabbedPane.TOP);
         scenarioTabs.setName(Resources.SCENARIO_TABS);
-        scenariosTabPanel.add(scenarioTabs, "cell 0 1 5 1,grow");
+        scenariosTabPanel.add(scenarioTabs, "cell 0 2 5 1,grow");
     }
 
     private void initAddScenarioButton() {
@@ -544,21 +574,21 @@ public class Screen implements IScreen {
         scenariosTabPanel = new JPanel();
         scenariosTabPanel.setName(Resources.SCENARIOS_TAB_PANEL);
         mainTabs.addTab(Resources.SCENARIOS_TAB_TITLE, null, scenariosTabPanel, null);
-        scenariosTabPanel.setLayout(new MigLayout("", "[][grow][]", "[][grow]"));
+        scenariosTabPanel.setLayout(new MigLayout("", "[][grow][]", "[][][grow]"));
         return scenariosTabPanel;
     }
 
     private JTabbedPane initMainTabs() {
         mainTabs = new JTabbedPane(JTabbedPane.TOP);
         mainTabs.setName(Resources.MAIN_TABS);
-        mainPanel.add(mainTabs, "cell 0 0,grow");
+        mainPanel.add(mainTabs, "cell 0 1,grow");
         return mainTabs;
     }
 
     private JPanel initMainPanel() {
         mainPanel = new JPanel();
         mainPanel.setName(Resources.MAIN_PANEL);
-        mainPanel.setLayout(new MigLayout("", "[grow]", "[grow]"));
+        mainPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
         return mainPanel;
     }
 
@@ -685,6 +715,7 @@ public class Screen implements IScreen {
     private void scenarioChanged() {
         ScenarioModel selectedScenario = storyModel.getSelectedScenario();
         if (selectedScenario != null) {
+            scenarioMetaTextField.setText(selectedScenario.getMeta());
             parameterValuesList.setModel(selectedScenario.getParamValuesListModel());
             parametersList.setModel(selectedScenario.getParametersListModel());
             examplesTable.setModel(selectedScenario.getExamplesTableModel());
@@ -777,6 +808,9 @@ public class Screen implements IScreen {
         scenarioComboBox.setModel(storyModel.getComboBoxModel());
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
+        storyMetaTextField.setText("");
+        storyMetaTextField.setEnabled(true);
+        scenarioMetaTextField.setText("");
         enableControls(false);
         enableOrDisableSaving();
     }
@@ -789,6 +823,8 @@ public class Screen implements IScreen {
         scenarioComboBox.setModel(storyModel.getComboBoxModel());
         addScenarioButton.setEnabled(true);
         storyTextArea.setText("");
+        storyMetaTextField.setEnabled(true);
+        storyMetaTextField.setText(storyModel.getMeta());
         enableControls(true);
         enableOrDisableSaving();
         scenarioChanged();
@@ -801,6 +837,7 @@ public class Screen implements IScreen {
         generateExamplesButton.setEnabled(enabled);
         copyTextButton.setEnabled(enabled);
         refreshStoryButton.setEnabled(enabled);
+        scenarioMetaTextField.setEnabled(enabled);
         if (!enabled) {
             stepsScrollPane.setViewportView(null);
             stepsScrollPane.setRowHeaderView(null);

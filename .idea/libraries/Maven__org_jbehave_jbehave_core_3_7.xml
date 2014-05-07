@@ -8,6 +8,7 @@
     </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/org/jbehave/jbehave-core/3.7/jbehave-core-3.7-sources.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/jbehave/jbehave-core/3.7/jbehave-core-3.7-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
