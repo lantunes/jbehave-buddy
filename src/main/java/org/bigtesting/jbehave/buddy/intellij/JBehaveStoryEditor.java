@@ -36,7 +36,7 @@ public class JBehaveStoryEditor implements FileEditor {
 
     private final VirtualFile virtualFile;
     private final Project project;
-    private final Document document;
+//    private final Document document;
 
     private Screen screen;
 
@@ -45,14 +45,14 @@ public class JBehaveStoryEditor implements FileEditor {
         this.virtualFile = virtualFile;
         this.project = project;
 
-        this.document = FileDocumentManager.getInstance().getDocument(virtualFile);
-        document.addDocumentListener(new DocumentAdapter() {
-            @Override
-            public void documentChanged(DocumentEvent e) {
-                log.info("document changed");
-                refreshScreen();
-            }
-        });
+//        this.document = FileDocumentManager.getInstance().getDocument(virtualFile);
+//        document.addDocumentListener(new DocumentAdapter() {
+//            @Override
+//            public void documentChanged(DocumentEvent e) {
+//                log.info("document changed");
+//                refreshScreen();
+//            }
+//        });
 
         this.screen = createScreen(virtualFile);
     }
@@ -68,18 +68,21 @@ public class JBehaveStoryEditor implements FileEditor {
         });
     }
 
-    private void refreshScreen() {
-
-        if (isDisposed()) return;
-
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            public void run() {
-                FileEditorManager manager = FileEditorManager.getInstance(project);
-                manager.closeFile(virtualFile);
-                manager.openFile(virtualFile, true);
-            }
-        });
-    }
+    // TODO we can't refresh the screen by closing and reopening the file
+    // we need to update the story contents in place, otherwise the user
+    // is potentially moved off the scenario they were on, etc.
+//    private void refreshScreen() {
+//
+//        if (isDisposed()) return;
+//
+//        ApplicationManager.getApplication().invokeLater(new Runnable() {
+//            public void run() {
+//                FileEditorManager manager = FileEditorManager.getInstance(project);
+//                manager.closeFile(virtualFile);
+//                manager.openFile(virtualFile, true);
+//            }
+//        });
+//    }
 
     @NotNull
     public JComponent getComponent() {
