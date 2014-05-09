@@ -32,4 +32,6 @@ file for Windows systems, and as an executable jar file for all other operating
 systems supporting a JVM. Java 1.5 or later is required. It is also a plugin
 for the IntelliJ IDEA IDE, supporting versions 12.1 and higher.
 
+Download [the IntelliJ IDEA plugin from the JetBrains Plugin Repository](http://plugins.jetbrains.com/plugin/7458?pr=idea).
+
 ![IntelliJPlugin](https://github.com/lantunes/jbehave-buddy/raw/master/pics/intellij.jpg)
