@@ -1,13 +1,20 @@
 package org.bigtesting.jbehave.buddy.intellij;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import com.intellij.openapi.util.IconLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class JBehaveStoryFileType extends LanguageFileType {
+
+    private static final Logger log = Logger.getInstance("JBehaveBuDDy-StoryFileType");
 
     public static final String EXTENSION = "story";
 
@@ -32,6 +39,6 @@ public class JBehaveStoryFileType extends LanguageFileType {
 
     @Nullable
     public Icon getIcon() {
-        return AllIcons.FileTypes.Any_type;
+        return IconLoader.getIcon("/icon.png");
     }
 }
