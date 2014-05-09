@@ -83,4 +83,8 @@ public class ExamplesTableModel implements TableModel {
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         delegate.setValueAt(aValue, rowIndex, columnIndex);
     }
+
+    public boolean hasRows() {
+        return delegate.getRowCount() > 0;
+    }
 }

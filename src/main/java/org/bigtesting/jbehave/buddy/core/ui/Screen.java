@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.io.FileUtils;
+import org.bigtesting.jbehave.buddy.core.ui.widgets.ExamplesTableModel;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ListAction;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.ParamValuesEditListAction;
 import org.bigtesting.jbehave.buddy.core.ui.widgets.StepsTextPane;
@@ -627,6 +628,16 @@ public class Screen implements IScreen {
     }
 
     private void generateExamples() {
+
+        ExamplesTableModel examples = storyModel.getSelectedScenario().getExamplesTableModel();
+        if (examples.hasRows()) {
+            int response = JOptionPane.showConfirmDialog(mainPanel, "The existing examples will be " +
+                    "overwritten. Do you wish to continue?");
+            if (response != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
         int numExamples = storyModel.getSelectedScenario().numExamples();
         if (numExamples > 50) {
             int response = JOptionPane.showConfirmDialog(mainPanel, "There are " + 

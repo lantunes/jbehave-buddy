@@ -118,7 +118,7 @@ public class ScenarioModel {
         return paramValuesListModel;
     }
     
-    public TableModel getExamplesTableModel() {
+    public ExamplesTableModel getExamplesTableModel() {
         return examplesTableModel;
     }
     
