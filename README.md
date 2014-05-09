@@ -1,5 +1,6 @@
-JBehave BuDDy is a desktop application that helps you write story files. It 
-provides a graphical interface for creating, editing, and formatting stories.
+JBehave BuDDy is a desktop application and IntelliJ IDEA plugin that helps you
+write story files. It provides a graphical interface for creating, editing,
+and formatting stories.
 
 Q: Why a separate application? Why not use an existing IDE JBehave plugin to 
 edit story files?
@@ -28,4 +29,7 @@ parameters in the scenario, and to keep only the ones you care about
 
 JBehave BuDDy is written for the Java platform. It is distributed as an .exe 
 file for Windows systems, and as an executable jar file for all other operating
-systems supporting a JVM. Java 1.5 or later is required. 
+systems supporting a JVM. Java 1.5 or later is required. It is also a plugin
+for the IntelliJ IDEA IDE, supporting versions 12.1 and higher.
+
+![IntelliJPlugin](https://github.com/lantunes/jbehave-buddy/raw/master/pics/intellij.jpg =730x500)
